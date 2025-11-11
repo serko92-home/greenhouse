@@ -1006,6 +1006,16 @@ function compute() {
   let statusMsg = heatOn
       ? "Heating pad should be on, nudging the bubble toward 50 °F."
       : "Heating pad is likely off, bubble is holding itself above 50 °F.";
+  
+  const insideHum = num("insideHum");
+  if (insideHum > 80) {
+    statusClass = "status-warn";
+    statusMsg += " Humidity is very high — open vent wider and run the fan on medium to vent out moisture.";
+  } else if (insideHum > 70) {
+    statusMsg += " Air feels damp; you can open the vent 1–2 in more or run the fan on low for circulation.";
+  } else if (insideHum < 60) {
+    statusMsg += " Air is quite dry; close vent slightly to help retain humidity.";
+  }
 
   if (mode==="dormant"){
     if (insideT<40){
@@ -1073,7 +1083,13 @@ function compute() {
     lightLine = "Light now is "+luxInfo.label+". "+(luxInfo.note || "");
   }
 
-  const summary = "Thermostat target about "+HEAT_SETPOINT+" °F. Vent is "+describeVent(vent)+". "+lightLine+" • Today: "+todayRec+" • Tonight: "+tonightRec+" • Tomorrow: "+tomorrowRec;
+    const summary = "Thermostat target about "+HEAT_SETPOINT+" °F. Vent is "+describeVent(vent)+". "
+    + "Inside humidity is "+Math.round(num('insideHum'))+"%. "
+    + lightLine
+    + " • Today: "+todayRec
+    + " • Tonight: "+tonightRec
+    + " • Tomorrow: "+tomorrowRec;
+
   setText("summary", summary);
 
   setText("todayRec", todayRec);
