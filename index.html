@@ -2,1201 +2,1177 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Greenhouse Helper</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Greenhouse Helper – Clean Cards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #020617;
+      --bg: #f3f4f6;
+      --body-bg: radial-gradient(circle at top, #d1fae5 0, #f3f4f6 40%, #e5e7eb 100%);
+      --card-bg: #ffffff;
       --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.22);
+      --accent-soft: rgba(34,197,94,0.12);
       --accent-blue: #38bdf8;
-      --accent-blue-soft: rgba(56, 189, 248, 0.24);
-      --border-subtle: #1f2937;
-      --border-strong: #374151;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.75);
-      --danger: #f97373;
-      --danger-soft: rgba(248, 113, 113, 0.22);
-      --ok-soft: rgba(34, 197, 94, 0.18);
-      --chip-bg: rgba(15, 23, 42, 0.75);
-      --chip-border: rgba(148, 163, 184, 0.35);
-      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
+      --border-subtle: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --ok: #16a34a;
+      --shadow-soft: 0 14px 35px rgba(15,23,42,0.12);
     }
-
-    :root[data-theme="dark"] {
-      --bg: #020617;
-      --card-bg: #020617;
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.22);
-      --accent-blue: #38bdf8;
-      --accent-blue-soft: rgba(56, 189, 248, 0.24);
-      --border-subtle: #1f2937;
-      --border-strong: #374151;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.9);
-      --chip-bg: rgba(15, 23, 42, 0.9);
-      --chip-border: rgba(148, 163, 184, 0.45);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: var(--font-main);
-      background:
-        radial-gradient(circle at top, #0f172a 0, #020617 38%, #000 100%);
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: var(--body-bg);
       color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      padding: 1.25rem;
     }
 
-    body.dark-theme {
-      background:
-        radial-gradient(circle at top, #000 0, #020617 40%, #020617 100%);
+
+    body.theme-dark {
+      --bg: #020617;
+      --card-bg: #020617;
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.24);
+      --accent-blue: #38bdf8;
+      --border-subtle: #1f2937;
+      --border-strong: #374151;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --danger: #fca5a5;
+      --warn: #fde68a;
+      --ok: #6ee7b7;
+      --shadow-soft: 0 18px 40px rgba(15,23,42,0.85);
+      --body-bg: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
     }
 
     .app {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      max-width: 520px;
+      margin: 0 auto 18px;
     }
 
-    .app-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
+    header {
+      padding: 8px 2px 10px;
     }
-
-    .title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .app-title {
-      font-weight: 650;
-      font-size: 1.6rem;
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .app-title-pill {
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      background: var(--accent-soft);
-      color: var(--accent);
-      border: 1px solid rgba(34, 197, 94, 0.45);
-    }
-
-    .app-subtitle {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      max-width: 36rem;
-    }
-
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.3rem;
-    }
-
-    .badge {
-      font-size: 0.7rem;
+    header h1 {
+      font-size: 1.0rem;
+      margin: 0 0 2px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border-radius: 999px;
-      padding: 0.18rem 0.5rem;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      color: #cbd5f5;
-      background: linear-gradient(
-        120deg,
-        rgba(15, 23, 42, 0.65),
-        rgba(15, 23, 42, 0.2)
-      );
+      color: #0f172a;
     }
-
-    .last-update {
-      font-size: 0.75rem;
+    header small {
+      display: block;
+      font-size: 0.74rem;
       color: var(--text-muted);
     }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 1rem;
-    }
-
-    @media (max-width: 760px) {
-      .grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    .meta {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .card {
-      position: relative;
-      background: radial-gradient(
-          circle at top left,
-          rgba(34, 197, 94, 0.06),
-          transparent 60%
-        ),
-        radial-gradient(
-          circle at top right,
-          rgba(56, 189, 248, 0.08),
-          transparent 55%
-        ),
-        linear-gradient(145deg, #020617, #020617);
-      border-radius: 1.1rem;
-      padding: 0.95rem 1.05rem 1.05rem;
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 12px 12px 12px;
+      margin-bottom: 10px;
       border: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-soft);
-      overflow: hidden;
-    }
-
-    .card-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: #cbd5f5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.55rem;
-    }
-
-    .card-title span.sub {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--text-muted);
-      text-transform: none;
-      letter-spacing: normal;
-    }
-
-    .card-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .chip {
-      border-radius: 999px;
-      padding: 0.45rem 0.7rem;
-      border: 1px solid var(--chip-border);
-      background: var(--chip-bg);
-      display: inline-flex;
-      align-items: baseline;
-      gap: 0.45rem;
-      font-size: 0.8rem;
-      white-space: nowrap;
-    }
-
-    .chip-label {
-      text-transform: uppercase;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-    }
-
-    .chip-value {
-      font-variant-numeric: tabular-nums;
-    }
-
-    .chip-pill {
-      border-radius: 999px;
-      padding: 0.08rem 0.4rem;
-      border: 1px solid rgba(156, 163, 175, 0.65);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-    }
-
-    .chip-pill.ok {
-      border-color: rgba(34, 197, 94, 0.8);
-      color: #bbf7d0;
-      background: var(--ok-soft);
-    }
-
-    .chip-pill.warn {
-      border-color: rgba(250, 204, 21, 0.8);
-      color: #fef9c3;
-      background: rgba(250, 204, 21, 0.2);
-    }
-
-    .chip-pill.danger {
-      border-color: rgba(248, 113, 113, 0.85);
-      color: #fee2e2;
-      background: var(--danger-soft);
-    }
-
-    .section-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .recommendation-block {
-      font-size: 0.82rem;
-      line-height: 1.5;
-      color: #e5e7eb;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .recommendation-block strong {
-      color: #bbf7d0;
-    }
-
-    .recommendation-list {
-      margin: 0.25rem 0 0;
-      padding-left: 1.05rem;
-      display: grid;
-      gap: 0.15rem;
-    }
-
-    .recommendation-list li {
-      font-size: 0.8rem;
-      color: var(--text-main);
-    }
-
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.5rem;
-      margin-top: 0.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .metric {
-      display: flex;
-      flex-direction: column;
-      gap: 0.12rem;
-      font-size: 0.78rem;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 0.68rem;
-    }
-
-    .metric-value {
-      font-variant-numeric: tabular-nums;
-      font-size: 0.86rem;
-    }
-
-    .metric-note {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .mode-tag {
-      padding: 0.12rem 0.5rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: #bfdbfe;
-      background: linear-gradient(
-        120deg,
-        rgba(59, 130, 246, 0.24),
-        rgba(59, 130, 246, 0.06)
-      );
-    }
-
-    .mode-tag.winter {
-      border-color: rgba(56, 189, 248, 0.7);
-      background: linear-gradient(
-        120deg,
-        rgba(56, 189, 248, 0.2),
-        rgba(15, 23, 42, 0.8)
-      );
-      color: #cffafe;
-    }
-
-    .mode-tag.wakeup {
-      border-color: rgba(250, 204, 21, 0.75);
-      background: linear-gradient(
-        120deg,
-        rgba(250, 204, 21, 0.2),
-        rgba(15, 23, 42, 0.85)
-      );
-      color: #fef9c3;
-    }
-
-    .mode-tag.active {
-      border-color: rgba(34, 197, 94, 0.9);
-      background: linear-gradient(
-        120deg,
-        rgba(34, 197, 94, 0.22),
-        rgba(15, 23, 42, 0.85)
-      );
-      color: #bbf7d0;
-    }
-
-    .field {
-      margin-bottom: 0.7rem;
-    }
-
-    .field label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 0.2rem;
-    }
-
-    .field-row {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
-
-    .field-row input[type="range"] {
-      flex: 1;
-      accent-color: var(--accent);
-    }
-
-    .field-value {
-      font-size: 0.82rem;
-      font-variant-numeric: tabular-nums;
-      min-width: 3.2rem;
-      text-align: right;
-    }
-
-    .mode-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      margin-bottom: 0.7rem;
-    }
-
-    .mode-row label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-    }
-
-    .mode-row select {
-      border-radius: 999px;
-      padding: 0.25rem 0.75rem;
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-main);
-      border: 1px solid var(--border-subtle);
-      font-size: 0.8rem;
-      outline: none;
-    }
-
-    .primary-btn {
-      border-radius: 999px;
-      border: none;
-      padding: 0.4rem 0.9rem;
-      font-size: 0.82rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(
-        135deg,
-        rgba(34, 197, 94, 0.9),
-        rgba(22, 163, 74, 0.98)
-      );
-      color: #052e16;
-      box-shadow: 0 10px 25px rgba(22, 163, 74, 0.5);
-    }
-
-    .primary-btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.6);
-    }
-
-    .controls-card {
-      margin-top: 0.25rem;
     }
 
     .controls-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
-    }
-
-    .controls-summary {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .controls-toggle-btn {
-      border: none;
-      background: transparent;
-      color: var(--accent);
-      font-size: 0.82rem;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .controls-toggle-btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    .controls-body {
-      margin-top: 0.6rem;
-    }
-
-    .sky-chip {
-      display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 8px;
+      font-size: 0.78rem;
+      padding: 2px 0 0;
+      cursor: pointer;
     }
-
-    .sky-icon {
-      font-size: 1.2rem;
-      line-height: 1;
-    }
-
-    .theme-card {
-      margin-top: 0.25rem;
-    }
-
-    .theme-row {
+    .controls-summary-text {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: baseline;
+      color: var(--text-main);
     }
-
-    .theme-label {
-      font-weight: 600;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    .controls-summary-text .divider {
       color: var(--text-muted);
     }
-
-    .theme-toggle {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-size: 0.82rem;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .theme-toggle input {
-      display: none;
-    }
-
-    .theme-toggle-knob {
-      width: 40px;
-      height: 22px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      background: var(--accent-soft);
-      position: relative;
-      transition: background 150ms ease, border-color 150ms ease;
-    }
-
-    .theme-toggle-knob::before {
-      content: "";
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: white;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
-      transition: transform 150ms ease;
-    }
-
-    body.dark-theme .theme-toggle-knob {
-      background: var(--accent-blue-soft);
-    }
-
-    body.dark-theme .theme-toggle-knob::before {
-      transform: translateX(16px);
-    }
-
-    .footer-note {
+    .controls-title-inline {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
       font-size: 0.7rem;
       color: var(--text-muted);
-      margin-top: -0.25rem;
+    }
+    .controls-toggle {
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      background: #f9fafb;
+      padding: 4px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .controls-toggle:active {
+      transform: translateY(1px);
+    }
+    .controls-body {
+      margin-top: 8px;
+    }
+    .controls-body.is-collapsed {
+      display: none;
+    }
+    .sky-icon {
+      font-size: 0.9rem;
+    }
+    .theme-toggle-card {
+      text-align: center;
+    }
+    .theme-toggle {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+    body.theme-dark .theme-toggle {
+      background: #020617;
     }
 
-    a {
-      color: var(--accent-blue);
+    .card-title {
+      font-size: 0.78rem;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
     }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+    .stat-tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e5f3ff;
+      color: #1d4ed8;
+    }
+    .stat-main {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .stat-main .value {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .stat-main .unit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .stat-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* tiny arc gauge */
+    .mini-arc {
+      position: relative;
+      width: 90px;
+      height: 44px;
+      border-radius: 90px 90px 0 0;
+      overflow: hidden;
+      background: linear-gradient(to right,#22c55e,#eab308,#f97316,#ef4444);
+      margin: 4px 0 2px;
+    }
+    .mini-arc-inner {
+      position: absolute;
+      inset: 8px;
+      border-radius: 90px 90px 0 0;
+      background: #f9fafb;
+    }
+    .mini-needle {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 2px;
+      height: 40px;
+      transform-origin: bottom center;
+      background: #111827;
+      box-shadow: 0 0 4px rgba(15,23,42,0.65);
+      transform: rotate(0deg);
+    }
+    .mini-center {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 8px;
+      height: 8px;
+      margin-left: -4px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+    }
+
+    /* heat + sky strip */
+    .status-strip {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .chip-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+    }
+    .chip-heat.on {
+      border-color: rgba(34,197,94,0.9);
+      background: #ecfdf5;
+      color: #166534;
+    }
+    .chip-heat.off {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1e40af;
+    }
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #9ca3af;
+    }
+    .chip-heat.on .chip-dot {
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34,197,94,0.9);
+    }
+    .chip-heat.off .chip-dot {
+      background: #3b82f6;
+      box-shadow: 0 0 4px rgba(59,130,246,0.9);
+    }
+
+    .chip span.value {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* controls */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    .field-row span.value {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      outline: none;
+      border: 1px solid var(--border-subtle);
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 8px rgba(34,197,94,0.9);
+      margin-top: -6px;
+    }
+
+    .mode-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 0.78rem;
+    }
+    select {
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      color: var(--text-main);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .primary-btn {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent));
+      color: white;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 34px rgba(15,23,42,0.42);
+    }
+    .primary-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 18px rgba(15,23,42,0.5);
+    }
+
+    #statusBox {
+      font-size: 0.8rem;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid transparent;
+    }
+    .status-ok { border-color: rgba(34,197,94,0.7); color: var(--ok); }
+    .status-warn { border-color: rgba(245,158,11,0.9); color: var(--warn); }
+    .status-bad { border-color: rgba(239,68,68,0.9); color: var(--danger); }
+
+    #summary {
+      font-size: 0.78rem;
+      margin-top: 6px;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .chips-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 0.76rem;
+    }
+    .chip-col {
+      padding: 6px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+    }
+    .chip-col span.label {
+      display: block;
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .hidden-inputs { display:none; }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <div class="title-block">
-        <div class="app-title">
-          <span>Greenhouse Helper</span>
-          <span class="app-title-pill">Lemongrass winter mode</span>
+<div class="app">
+  <header>
+    <h1>Greenhouse Helper</h1>
+    <small>Ferns in bubble, lemongrass wrapped, zone 7b.</small>
+    <div id="weatherInfo" class="meta"></div>
+    <div id="ws1Info" class="meta"></div>
+    <div id="lastUpdated" class="meta"></div>
+  </header>
+
+  <!-- Now card -->
+  <div class="card">
+    <div class="card-title">Now</div>
+
+    <div class="status-strip">
+      <div id="heatChip" class="chip chip-heat off">
+        <span class="chip-dot"></span>
+        <span class="chip-label">Heat</span>
+        <span id="heatChipText" class="value">Standby</span>
+      </div>
+      <div class="chip">
+        <span class="chip-label">Sky</span>
+        <span id="skyIcon" class="sky-icon" aria-hidden="true">☁️</span>
+        <span id="skyLabel" class="value">No reading</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="stat">
+        <div class="stat-header">
+          <span class="stat-label">Outside</span>
+          <span class="stat-tag">Ambient</span>
         </div>
-        <div class="app-subtitle">
-          Uses Ubibot readings to decide when to relax, vent or protect the greenhouse. 
-          Slider controls the vent opening and the mode picks how aggressive you want to be.
+        <div class="mini-arc">
+          <div class="mini-arc-inner"></div>
+          <div id="outsideNeedle" class="mini-needle"></div>
+          <div class="mini-center"></div>
         </div>
-        <div class="badge-row">
-          <span class="badge">Thermostat 50F</span>
-          <span class="badge">Outdoor probe</span>
-          <span class="badge">Lux based sky guess</span>
+        <div class="stat-main">
+          <span class="value"><span id="outsideTempDisplay"> - </span></span>
+          <span class="unit">°F</span>
+        </div>
+        <div class="stat-sub">
+          <span id="outsideHumDisplay"> - </span> % RH
         </div>
       </div>
-      <div class="last-update">
-        Last updated<br />
-        <span id="lastUpdated">never</span>
+
+      <div class="stat">
+        <div class="stat-header">
+          <span class="stat-label">Inside</span>
+          <span class="stat-tag">Greenhouse</span>
+        </div>
+        <div class="mini-arc">
+          <div class="mini-arc-inner"></div>
+          <div id="insideNeedle" class="mini-needle"></div>
+          <div class="mini-center"></div>
+        </div>
+        <div class="stat-main">
+          <span class="value"><span id="insideTempDisplay"> - </span></span>
+          <span class="unit">°F</span>
+        </div>
+        <div class="stat-sub">
+          <span id="insideHumDisplay"> - </span> % RH ·
+          <span id="insideLight">no light yet</span>
+        </div>
       </div>
-    </header>
-
-    <main class="grid">
-      <section class="card">
-        <div class="card-title">
-          Current readings
-          <span class="sub">From Ubibot channel 116552</span>
-        </div>
-
-        <div class="section-label">Environment</div>
-        <div class="card-row">
-          <div class="chip">
-            <div class="chip-label">Outside</div>
-            <div class="chip-value">
-              <span id="outTempLabel">--</span> F, 
-              <span id="outHumLabel">--</span> %
-            </div>
-          </div>
-          <div class="chip">
-            <div class="chip-label">Inside</div>
-            <div class="chip-value">
-              <span id="inTempLabel">--</span> F, 
-              <span id="inHumLabel">--</span> %
-            </div>
-          </div>
-        </div>
-
-        <div class="section-label">Light and sky</div>
-        <div class="card-row">
-          <div class="chip">
-            <div class="chip-label">Light</div>
-            <div class="chip-value">
-              <span id="luxLabel">--</span> lux
-            </div>
-          </div>
-          <div class="chip sky-chip">
-            <span id="skyIcon" class="sky-icon" aria-hidden="true">⛅️</span>
-            <div class="chip-label">Sky</div>
-            <div class="chip-value" id="skyLabel">No reading yet</div>
-          </div>
-        </div>
-
-        <div class="data-grid">
-          <div class="metric">
-            <div class="metric-label">Heating pad</div>
-            <div class="metric-value" id="heatStatus">Unknown</div>
-            <div class="metric-note" id="heatNote"></div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Vent suggestion</div>
-            <div class="metric-value" id="ventSuggestion">Awaiting data</div>
-            <div class="metric-note" id="ventNote"></div>
-          </div>
-        </div>
-
-        <div class="section-label">Mode snapshot</div>
-        <div class="card-row">
-          <span id="modeTag" class="mode-tag winter">Winter - keep roots safe</span>
-          <span class="chip-pill" id="hintChip">Waiting for live data</span>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-title">
-          Recommendations
-          <span class="sub">Based on current readings and controls</span>
-        </div>
-
-        <div class="section-label">What to know</div>
-        <div class="recommendation-block" id="summaryBlock">
-          <span id="summaryLine">Waiting for first reading. Connect to the network and tap Update.</span>
-        </div>
-
-        <div class="section-label" style="margin-top:0.7rem;">Next steps</div>
-        <ul class="recommendation-list" id="actionsList">
-          <li>Once data loads, you will see concrete vent and pad instructions here.</li>
-        </ul>
-
-        <div class="card controls-card">
-          <div class="card-title controls-header">
-            <span class="controls-summary" id="controlsSummary">
-              Controls | Mode: Winter - Vent: 1.0 in.
-            </span>
-            <button
-              type="button"
-              class="controls-toggle-btn"
-              id="controlsToggle"
-              aria-expanded="false"
-            >
-              Expand
-            </button>
-          </div>
-
-          <div id="controlsBody" class="controls-body">
-            <div class="field">
-              <label for="ventSlider">
-                Vent opening
-                <span class="field-value"><span id="ventLabel">1.0</span> in</span>
-              </label>
-              <div class="field-row">
-                <input id="ventSlider" type="range" min="0" max="10" step="0.5" value="1" />
-              </div>
-              <input type="hidden" id="ventInches" value="1">
-            </div>
-
-            <div class="mode-row">
-              <label for="mode">Mode</label>
-              <select id="mode">
-                <option value="winter">Winter</option>
-                <option value="wakeup">Wake up</option>
-                <option value="active">Active growth</option>
-              </select>
-            </div>
-
-            <button type="button" class="primary-btn" id="updateBtn">Update</button>
-          </div>
-        </div>
-
-        <div class="card theme-card">
-          <div class="theme-row">
-            <span class="theme-label">Theme</span>
-            <label class="theme-toggle">
-              <span id="themeToggleLabel">Dark</span>
-              <input id="themeToggle" type="checkbox" checked />
-              <span class="theme-toggle-knob"></span>
-            </label>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <p class="footer-note">
-      Heating pad indicator assumes the pad thermostat clicks on when inside temperature is below 50 F. 
-      Adjust logic in the script at the bottom if your hardware behaves differently.
-    </p>
+    </div>
   </div>
 
-  <script>
-    const UBI_URL =
-      "https://webapi.ubibot.com/channels/116552?api_key=1b96d5173ae6435faaf2f61f474af06d";
-    const HEAT_THRESHOLD_F = 50;
-    const STORAGE_KEY = "greenhouseHelperState_v2";
-    const THEME_KEY = "greenhouseHelperTheme";
+  <!-- Controls -->
+  <div class="card controls-card">
+    <div class="controls-header" id="controlsHeader">
+      <div class="controls-summary-text">
+        <span class="controls-title-inline">Controls</span>
+        <span class="divider">|</span>
+        <span id="controlsModeSummary">Mode: Winter</span>
+        <span class="divider">-</span>
+        <span id="controlsVentSummary">Vent: 1in.</span>
+      </div>
+      <button type="button" class="controls-toggle" id="controlsToggle" aria-expanded="true" aria-controls="controlsBody">
+        <span id="controlsChevron">▴</span>
+      </button>
+    </div>
 
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.textContent = value;
+    <div class="controls-body" id="controlsBody">
+      <div class="field">
+        <div class="field-row">
+          <span>Top vent opening</span>
+          <span class="value"><span id="ventLabel">1.0</span> in</span>
+        </div>
+        <input type="range" id="ventSlider" min="0" max="10" step="0.5" value="1.0">
+      </div>
+
+      <div class="mode-row">
+        <span>Mode</span>
+        <select id="mode">
+          <option value="dormant">Winter</option>
+          <option value="wakeup">Wake up</option>
+          <option value="active">Active Growth</option>
+        </select>
+      </div>
+
+      <button type="button" class="primary-btn" onclick="compute()">Update plan</button>
+    </div>
+  </div>
+
+  <!-- Status and plan -->
+  <div class="card">
+    <div class="card-title">Status and plan</div>
+    <div id="statusBox"></div>
+    <div id="summary"></div>
+
+    <div class="chips-3">
+      <div class="chip-col">
+        <span class="label">Today</span>
+        <div id="todayRec"></div>
+      </div>
+      <div class="chip-col">
+        <span class="label">Tonight</span>
+        <div id="tonightRec"></div>
+      </div>
+      <div class="chip-col">
+        <span class="label">Tomorrow</span>
+        <div id="tomorrowRec"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-toggle-card">
+    <button type="button" class="theme-toggle" id="themeToggle">
+      <span id="themeToggleIcon">☀️</span>
+      <span id="themeToggleLabel">Light mode</span>
+    </button>
+  </div>
+
+  <!-- Data model -->
+  <div class="hidden-inputs">
+    <input type="number" id="outsideTemp" value="35" />
+    <input type="number" id="outsideHum" value="60" />
+    <input type="number" id="insideTemp" value="47" />
+    <input type="number" id="insideHum" value="75" />
+    <input type="number" id="ventInches" value="1.0" />
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY      = "greenhouseHelperState_v15";
+const THEME_KEY       = "greenhouseHelperTheme_v1";
+const WEATHER_MAX_AGE_MS = 60 * 60 * 1000;
+const WS1_MAX_AGE_MS     = 10 * 60 * 1000;
+const HEAT_SETPOINT      = 50;
+
+const UBIBOT_CHANNEL_ID = "116552";
+const UBIBOT_API_KEY    = "1b96d5173ae6435faaf2f61f474af06d";
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+function num(id) { return parseFloat(document.getElementById(id).value); }
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+function gaugeAngleFromTemp(t) {
+  if (isNaN(t)) return -120;
+  const clamped = clamp(t, 0, 100);
+  return -120 + (clamped / 100) * 240;
+}
+function updateGauges() {
+  const ot = num("outsideTemp");
+  const it = num("insideTemp");
+  const on = document.getElementById("outsideNeedle");
+  const inn = document.getElementById("insideNeedle");
+  if (on)  on.style.transform  = "rotate(" + gaugeAngleFromTemp(ot) + "deg)";
+  if (inn) inn.style.transform = "rotate(" + gaugeAngleFromTemp(it) + "deg)";
+}
+function mirrorDisplays() {
+  const ot = num("outsideTemp"), oh = num("outsideHum");
+  const it = num("insideTemp"), ih = num("insideHum");
+  if (!isNaN(ot)) setText("outsideTempDisplay", Math.round(ot));
+  if (!isNaN(oh)) setText("outsideHumDisplay", Math.round(oh));
+  if (!isNaN(it)) setText("insideTempDisplay", Math.round(it));
+  if (!isNaN(ih)) setText("insideHumDisplay", Math.round(ih));
+  updateGauges();
+}
+
+function describeVent(v) {
+  if (v <= 0.25) return "fully closed";
+  if (v <= 1)    return "barely cracked";
+  if (v <= 3)    return "slightly open";
+  if (v <= 6)    return "moderately open";
+  return "wide open";
+}
+
+/* Lux helpers */
+
+function getLuxInfo(lx) {
+  if (lx == null || isNaN(lx)) {
+    return { bucket:null, label:"no reading", note:"Sensor has no recent light value yet." };
+  }
+  let bucket, label, note;
+  if (lx < 10) {
+    bucket = "night";
+    label  = "night";
+    note   = "Sky is dark. Bubble only loses heat right now.";
+  } else if (lx < 80) {
+    bucket = "very_low";
+    label  = "very dim";
+    note   = "Heavy cloud or dawn / dusk. Expect only gentle warming from the sky.";
+  } else if (lx < 300) {
+    bucket = "cloudy";
+    label  = "cloudy";
+    note   = "Soft overcast light. Bubble will warm a bit but slowly.";
+  } else if (lx < 1200) {
+    bucket = "bright";
+    label  = "bright shade";
+    note   = "Bright but indirect sky. Bubble should gain some heat while this lasts.";
+  } else {
+    bucket = "full_sun";
+    label  = "full sun";
+    note   = "Strong sun on plastic. Inside can climb quickly if the vent is tight.";
+  }
+  return { bucket, label, note };
+}
+
+function iconForLuxBucket(bucket) {
+  switch (bucket) {
+    case "night":
+      return "🌙";
+    case "very_low":
+      return "🌅";
+    case "cloudy":
+      return "☁️";
+    case "bright":
+      return "⛅";
+    case "full_sun":
+      return "☀️";
+    default:
+      return "·";
+  }
+}
+function getCurrentLux() {
+  const el = document.getElementById("insideLight");
+  if (!el) return NaN;
+  if (el.dataset && el.dataset.lastLux) return parseFloat(el.dataset.lastLux);
+  const m = (el.textContent || "").match(/(\d+)\s*lux/);
+  return m ? parseFloat(m[1]) : NaN;
+}
+
+function updateHeatAndSky(insideT, luxInfo) {
+  const heatOn = insideT < HEAT_SETPOINT;
+  const chip   = document.getElementById("heatChip");
+  const chipTxt= document.getElementById("heatChipText");
+  if (chip && chipTxt) {
+    chip.classList.remove("on","off");
+    chip.classList.add(heatOn ? "on" : "off");
+    chipTxt.textContent = heatOn
+      ? "On"
+      : "Off";
+  }
+  if (!luxInfo) luxInfo = getLuxInfo(getCurrentLux());
+  const skyLabel = document.getElementById("skyLabel");
+  const skyIcon = document.getElementById("skyIcon");
+  if (skyLabel && luxInfo) {
+    const lx = getCurrentLux();
+    let text = luxInfo.label;
+    if (!isNaN(lx)) text = luxInfo.label + " (" + Math.round(lx) + " lux)";
+    skyLabel.textContent = text;
+    if (luxInfo.note) skyLabel.title = luxInfo.note;
+    if (skyIcon) {
+      skyIcon.textContent = iconForLuxBucket(luxInfo.bucket);
+    }
+  }
+}
+
+/* State */
+
+let lastWeatherFetchedAt = null;
+let lastWS1FetchedAt     = null;
+let todayMin=null,todayMax=null,tomorrowMin=null,tomorrowMax=null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    for (const k of ["outsideTemp","outsideHum","insideTemp","insideHum","ventInches"]) {
+      if (s[k] != null && document.getElementById(k)) {
+        document.getElementById(k).value = s[k];
+      }
+    }
+    if (s.ventInches != null) {
+      document.getElementById("ventSlider").value = s.ventInches;
+      setText("ventLabel", s.ventInches);
+    }
+    if (s.mode) document.getElementById("mode").value = s.mode;
+    if (s.lastUpdated) setText("lastUpdated","Last updated: "+s.lastUpdated);
+    if (s.statusHTML) {
+      const box = document.getElementById("statusBox");
+      box.className = s.statusClass || "";
+      box.textContent = s.statusHTML;
+    }
+    if (s.summary) setText("summary", s.summary);
+    if (s.todayRec) setText("todayRec", s.todayRec);
+    if (s.tonightRec) setText("tonightRec", s.tonightRec);
+    if (s.tomorrowRec) setText("tomorrowRec", s.tomorrowRec);
+    lastWeatherFetchedAt = s.weatherFetchedAt || null;
+    lastWS1FetchedAt     = s.ws1FetchedAt || null;
+    todayMin    = s.todayMin    ?? todayMin;
+    todayMax    = s.todayMax    ?? todayMax;
+    tomorrowMin = s.tomorrowMin ?? tomorrowMin;
+    tomorrowMax = s.tomorrowMax ?? tomorrowMax;
+    mirrorDisplays();
+    showStalenessBadges();
+    updateHeatAndSky(num("insideTemp"), getLuxInfo(getCurrentLux()));
+    updateControlsSummary();
+  } catch(e){ console.warn("loadState failed", e); }
+}
+
+function saveState(extra) {
+  const base = {
+    outsideTemp:num("outsideTemp"),
+    outsideHum:num("outsideHum"),
+    insideTemp:num("insideTemp"),
+    insideHum:num("insideHum"),
+    ventInches:num("ventInches"),
+    mode:document.getElementById("mode").value,
+    weatherFetchedAt:lastWeatherFetchedAt,
+    ws1FetchedAt:lastWS1FetchedAt,
+    todayMin,todayMax,tomorrowMin,tomorrowMax
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.assign(base, extra || {})));
+  } catch(e){}
+}
+
+/* Weather */
+
+async function fetchWeather() {
+  try {
+    setText("weatherInfo","Updating current and forecast weather for Troy, NC...");
+    const lat = 35.36, lon = -79.89;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&daily=temperature_2m_min,temperature_2m_max&timezone=auto`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+
+    if (data.current_weather && typeof data.current_weather.temperature === "number") {
+      const tempF = data.current_weather.temperature * 9/5 + 32;
+      document.getElementById("outsideTemp").value = tempF.toFixed(1);
+    }
+    let hum = null;
+    if (data.hourly && data.hourly.relativehumidity_2m && data.hourly.time && data.current_weather) {
+      const idx = data.hourly.time.indexOf(data.current_weather.time);
+      if (idx >= 0) hum = data.hourly.relativehumidity_2m[idx];
+    }
+    if (hum == null && data.hourly && data.hourly.relativehumidity_2m) hum = data.hourly.relativehumidity_2m[0];
+    if (hum != null) document.getElementById("outsideHum").value = Math.round(hum);
+
+    if (data.daily && Array.isArray(data.daily.temperature_2m_min) && data.daily.temperature_2m_min.length >= 2) {
+      todayMin    = data.daily.temperature_2m_min[0]*9/5+32;
+      todayMax    = data.daily.temperature_2m_max[0]*9/5+32;
+      tomorrowMin = data.daily.temperature_2m_min[1]*9/5+32;
+      tomorrowMax = data.daily.temperature_2m_max[1]*9/5+32;
+    }
+    lastWeatherFetchedAt = Date.now();
+    let info = "Outside weather updated just now for Troy, NC.";
+    if (tomorrowMin!=null && tomorrowMax!=null) {
+      info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
+    }
+    setText("weatherInfo", info);
+    mirrorDisplays();
+  } catch(e) {
+    console.error(e);
+    setText("weatherInfo","Weather fetch failed, using last saved outside values.");
+  }
+}
+
+function showStalenessBadges(){
+  if (lastWeatherFetchedAt){
+    const age = Date.now()-lastWeatherFetchedAt;
+    if (age>WEATHER_MAX_AGE_MS){
+      setText("weatherInfo","Outside weather is stale (over 1 hour). Pull to refresh or tap Update plan.");
+    }
+  }
+  if (lastWS1FetchedAt){
+    const age = Date.now()-lastWS1FetchedAt;
+    const min = Math.round(age/60000);
+    let msg = "Inside sensor updated "+min+" min ago.";
+    if (age>WS1_MAX_AGE_MS) msg = "Inside sensor data is stale ("+min+" min). Retrying soon.";
+    const node = document.getElementById("insideLight");
+    if (node && node.dataset.lastLux) {
+      msg += " · Light "+node.dataset.lastLux+" lux";
+    }
+    setText("ws1Info", msg);
+  }
+}
+
+/* WS1 sensor */
+
+async function fetchWS1(forceLog){
+  const url = `https://webapi.ubibot.com/channels/${UBIBOT_CHANNEL_ID}?api_key=${UBIBOT_API_KEY}`;
+  try{
+    if (forceLog) console.log("WS1 GET", url);
+    const res = await fetch(url, {cache:"no-store"});
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const json = await res.json();
+    const ch = json.channel;
+    if (!ch || !ch.last_values) throw new Error("No last_values in WS1 response");
+
+    const last = JSON.parse(ch.last_values);
+    const tRaw  = last.field1 && Number(last.field1.value);
+    const hRaw  = last.field2 && Number(last.field2.value);
+    const light = last.field3 && Number(last.field3.value);
+
+    if (tRaw==null || isNaN(tRaw) || hRaw==null || isNaN(hRaw))
+      throw new Error("Missing temp or humidity");
+
+    const tempF = tRaw < 60 ? (tRaw*9/5+32) : tRaw;
+
+    if (tempF < 10 || tempF > 120) throw new Error("Outlier tempF="+tempF);
+    if (hRaw  < 0  || hRaw  > 100) throw new Error("Outlier humidity="+hRaw);
+
+    document.getElementById("insideTemp").value = tempF.toFixed(1);
+    document.getElementById("insideHum").value  = Math.round(hRaw);
+
+    if (!isNaN(light)){
+      const lx   = Math.round(light);
+      const info = getLuxInfo(lx);
+      const node = document.getElementById("insideLight");
+      if (node) {
+        node.textContent = lx+" lux · "+info.label;
+        node.dataset.lastLux   = lx;
+        node.dataset.luxBucket = info.bucket || "";
+        node.dataset.luxNote   = info.note || "";
       }
     }
 
-    function round(value, digits) {
-      const d = typeof digits === "number" ? digits : 1;
-      const n = Number(value);
-      if (!Number.isFinite(n)) return value;
-      return n.toFixed(d);
+    lastWS1FetchedAt = Date.now();
+    showStalenessBadges();
+    mirrorDisplays();
+    updateHeatAndSky(num("insideTemp"), getLuxInfo(getCurrentLux()));
+    return true;
+  }catch(err){
+    console.error("WS1 fetch failed:", err);
+    if (lastWS1FetchedAt && (Date.now()-lastWS1FetchedAt)<(3*60*60*1000)){
+      showStalenessBadges();
+      mirrorDisplays();
+      return false;
+    }else{
+      setText("ws1Info","Could not retrieve inside sensor right now.");
+      return false;
     }
+  }
+}
 
-    function luxBucket(lux) {
-      if (!Number.isFinite(lux)) return { bucket: "unknown", label: "No reading yet" };
-      if (lux < 5) return { bucket: "dark", label: "Dark" };
-      if (lux < 80) return { bucket: "very_low", label: "Very low light" };
-      if (lux < 3500) return { bucket: "cloudy", label: "Cloudy or shade" };
-      if (lux < 15000) return { bucket: "bright", label: "Bright, filtered sun" };
-      return { bucket: "full_sun", label: "Full sun" };
+/* Plan logic */
+
+function compute() {
+  mirrorDisplays();
+
+  let insideT = num("insideTemp");
+  let vent    = clamp(num("ventInches"),0,10);
+  document.getElementById("ventInches").value = vent;
+  document.getElementById("ventSlider").value = vent;
+  setText("ventLabel", vent.toFixed(1));
+  const mode = document.getElementById("mode").value;
+
+  const heatOn = insideT < HEAT_SETPOINT;
+  const lux    = getCurrentLux();
+  const luxInfo = getLuxInfo(lux);
+  updateHeatAndSky(insideT, luxInfo);
+
+  let statusClass="status-ok";
+  let statusMsg = heatOn
+      ? "Heating pad should be on, nudging the bubble toward 50 °F."
+      : "Heating pad is likely off, bubble is holding itself above 50 °F.";
+
+  if (mode==="dormant"){
+    if (insideT<40){
+      statusClass="status-bad";
+      statusMsg += " Inside is colder than ideal for safe dormancy.";
+    } else if (insideT>60){
+      statusClass="status-warn";
+      statusMsg += " Inside is warmer than ideal for dormancy.";
+    } else {
+      statusMsg += " Temperature is in a good dormancy band.";
     }
-
-    function updateSkyIcon(info) {
-      const iconEl = document.getElementById("skyIcon");
-      const labelEl = document.getElementById("skyLabel");
-      if (!iconEl) return;
-
-      if (!info) {
-        const luxText = document.getElementById("luxLabel")?.textContent || "";
-        const luxValue = parseFloat(luxText);
-        info = luxBucket(luxValue);
-      }
-
-      let emoji = "⛅️";
-      switch (info.bucket) {
-        case "dark":
-          emoji = "🌙";
-          break;
-        case "very_low":
-          emoji = "🌒";
-          break;
-        case "cloudy":
-          emoji = "☁️";
-          break;
-        case "bright":
-          emoji = "🌤";
-          break;
-        case "full_sun":
-          emoji = "☀️";
-          break;
-      }
-
-      iconEl.textContent = emoji;
-      if (labelEl && info.label) {
-        labelEl.textContent = info.label;
-      }
-      iconEl.title = info.label || "";
+  }else if(mode==="wakeup"){
+    if (insideT<45) statusMsg += " On the cool side for wake up.";
+    if (insideT>65){
+      statusClass="status-warn";
+      statusMsg += " A bit warm for wake up, use more vent on bright spells.";
     }
-
-    function applyTheme(theme) {
-      const root = document.documentElement;
-      const body = document.body;
-      const isDark = theme === "dark";
-      if (root) {
-        root.setAttribute("data-theme", isDark ? "dark" : "light");
-      }
-      if (body) {
-        body.classList.toggle("dark-theme", isDark);
-      }
-      const label = document.getElementById("themeToggleLabel");
-      const toggle = document.getElementById("themeToggle");
-      if (label) {
-        label.textContent = isDark ? "Dark" : "Light";
-      }
-      if (toggle && toggle.checked !== isDark) {
-        toggle.checked = isDark;
-      }
+  }else{
+    if (insideT<55) statusMsg += " Cool for active growth.";
+    if (insideT>75){
+      statusClass="status-warn";
+      statusMsg += " Quite warm, increase venting or shade.";
     }
+  }
 
-    function initTheme() {
-      let stored = null;
-      try {
-        stored = localStorage.getItem(THEME_KEY);
-      } catch (e) {}
+  let todayRec, tonightRec, tomorrowRec;
 
-      const prefersDark =
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (insideT >= 60)      todayRec = "Open top vent 3 - 6 in at midday and drift back to 1 - 2 in late afternoon.";
+  else if (insideT >= 50) todayRec = "Use a modest 2 - 4 in crack while the sun is on the plastic, under 2 in otherwise.";
+  else if (insideT >= 45) todayRec = "Keep vent 1 - 2 in; try a brief 2 - 3 in airing if condensation is streaming.";
+  else                    todayRec = "Hold the vent tight at 0 - 1 in so the pad can keep up with the chill.";
 
-      const theme =
-        stored === "light" || stored === "dark"
-          ? stored
-          : prefersDark
-          ? "dark"
-          : "light";
+  let nightLow = (tomorrowMin!=null) ? tomorrowMin : todayMin;
+  if (nightLow != null){
+    const n = Math.round(nightLow);
+    if (n < 25)      tonightRec = "Seal vent to 0 - 0.5 in with forecast near "+n+" °F.";
+    else if (n <=35) tonightRec = "Keep 0.5 - 1.5 in with forecast near "+n+" °F.";
+    else             tonightRec = "Mild night around "+n+" °F - 1 - 3 in is fine.";
+  }else{
+    tonightRec = "Cool nights - 0 - 1 in. Mild nights - 1 - 3 in.";
+  }
 
-      applyTheme(theme);
-
-      const toggle = document.getElementById("themeToggle");
-      if (toggle) {
-        toggle.addEventListener("change", () => {
-          const newTheme = toggle.checked ? "dark" : "light";
-          applyTheme(newTheme);
-          try {
-            localStorage.setItem(THEME_KEY, newTheme);
-          } catch (e) {}
-        });
-      }
+  if (tomorrowMin!=null && tomorrowMax!=null){
+    const lo = Math.round(tomorrowMin), hi = Math.round(tomorrowMax);
+    if (mode==="dormant"){
+      if (hi >= 60)      tomorrowRec = "Plan for 3 - 6 in at midday around "+lo+" - "+hi+" °F, then drop under 2 in by sunset.";
+      else if (hi <= 45) tomorrowRec = "Stay tight 0 - 1 in most of the day around "+lo+" - "+hi+" °F.";
+      else               tomorrowRec = "Use a short window of 2 - 4 in while brightest around "+lo+" - "+hi+" °F.";
+    }else if(mode==="wakeup"){
+      tomorrowRec = "Let vent reach 3 - 6 in a bit longer with tomorrow around "+lo+" - "+hi+" °F.";
+    }else{
+      tomorrowRec = "Use 4 - 8 in in warm spells around "+lo+" - "+hi+" °F, easing back to 2 - 3 in later.";
     }
+  }else{
+    tomorrowRec = "Mirror today - wider with warmth and sun, tighter with cold or cloud.";
+  }
 
-    function setControlsExpanded(expanded) {
-      const body = document.getElementById("controlsBody");
-      const toggle = document.getElementById("controlsToggle");
-      if (!body || !toggle) return;
-      body.style.display = expanded ? "block" : "none";
-      toggle.textContent = expanded ? "Collapse" : "Expand";
-      toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
-    }
+  const box = document.getElementById("statusBox");
+  box.className = "";
+  box.classList.add(statusClass);
+  box.textContent = statusMsg;
 
-    function updateControlsSummary() {
-      const modeSelect = document.getElementById("mode");
-      const ventLabel = document.getElementById("ventLabel");
-      const summaryEl = document.getElementById("controlsSummary");
-      if (!summaryEl || !modeSelect || !ventLabel) return;
-      const modeText =
-        modeSelect.options[modeSelect.selectedIndex]?.text ||
-        modeSelect.value ||
-        "Unknown";
-      const ventText = ventLabel.textContent || "?";
-      summaryEl.textContent =
-        "Controls | Mode: " + modeText + " - Vent: " + ventText + " in.";
-      const modeTag = document.getElementById("modeTag");
-      if (modeTag) {
-        modeTag.textContent =
-          modeText +
-          (modeSelect.value === "winter"
-            ? " - keep roots safe"
-            : modeSelect.value === "wakeup"
-            ? " - gentle wake up"
-            : " - push growth");
-        modeTag.classList.remove("winter", "wakeup", "active");
-        if (modeSelect.value === "winter") modeTag.classList.add("winter");
-        else if (modeSelect.value === "wakeup") modeTag.classList.add("wakeup");
-        else modeTag.classList.add("active");
-      }
-    }
+  let lightLine = "";
+  if (luxInfo && luxInfo.label) {
+    lightLine = "Light now is "+luxInfo.label+". "+(luxInfo.note || "");
+  }
 
-    function initControls() {
-      const slider = document.getElementById("ventSlider");
-      const label = document.getElementById("ventLabel");
-      const hidden = document.getElementById("ventInches");
-      const modeSelect = document.getElementById("mode");
-      const toggle = document.getElementById("controlsToggle");
-      const updateBtn = document.getElementById("updateBtn");
+  const summary = "Thermostat target about "+HEAT_SETPOINT+" °F. Vent is "+describeVent(vent)+". "+lightLine+" • Today: "+todayRec+" • Tonight: "+tonightRec+" • Tomorrow: "+tomorrowRec;
+  setText("summary", summary);
 
-      if (!slider || !label || !hidden) return;
+  setText("todayRec", todayRec);
+  setText("tonightRec", tonightRec);
+  setText("tomorrowRec", tomorrowRec);
 
-      slider.addEventListener("input", () => {
-        const v = Number(slider.value);
-        label.textContent = v.toFixed(1);
-        hidden.value = v;
-        updateControlsSummary();
-      });
+  const stamp = new Date().toLocaleString();
+  setText("lastUpdated","Last updated: "+stamp);
+  saveState({
+    lastUpdated: stamp,
+    statusHTML: statusMsg,
+    statusClass,
+    summary,
+    todayRec, tonightRec, tomorrowRec
+  });
 
-      if (modeSelect) {
-        modeSelect.addEventListener("change", () => {
-          updateControlsSummary();
-        });
-      }
+  updateControlsSummary();
+  setControlsOpen(false);
+}
 
-      if (toggle) {
-        toggle.addEventListener("click", () => {
-          const expanded = toggle.getAttribute("aria-expanded") === "true";
-          setControlsExpanded(!expanded);
-        });
-      }
+/* controls helpers */
 
-      if (updateBtn) {
-        updateBtn.addEventListener("click", () => {
-          compute();
-          setControlsExpanded(false);
-        });
-      }
+function updateControlsSummary() {
+  const modeSelect = document.getElementById("mode");
+  const ventSlider = document.getElementById("ventSlider");
+  if (!modeSelect || !ventSlider) return;
+  const label = modeSelect.options[modeSelect.selectedIndex].text;
+  setText("controlsModeSummary", "Mode: " + label);
+  setText("controlsVentSummary", "Vent: " + ventSlider.value + "in.");
+}
 
+function setControlsOpen(open) {
+  const body = document.getElementById("controlsBody");
+  const chevron = document.getElementById("controlsChevron");
+  const toggle = document.getElementById("controlsToggle");
+  if (!body || !chevron || !toggle) return;
+  if (open) {
+    body.classList.remove("is-collapsed");
+    toggle.setAttribute("aria-expanded", "true");
+    chevron.textContent = "▴";
+  } else {
+    body.classList.add("is-collapsed");
+    toggle.setAttribute("aria-expanded", "false");
+    chevron.textContent = "▾";
+  }
+}
+
+/* controls */
+
+function initControls(){
+  const vSlider = document.getElementById("ventSlider");
+  const modeSelect = document.getElementById("mode");
+  const header = document.getElementById("controlsHeader");
+  const toggleBtn = document.getElementById("controlsToggle");
+
+  if (vSlider) {
+    vSlider.addEventListener("input", () => {
+      document.getElementById("ventInches").value = vSlider.value;
+      setText("ventLabel", vSlider.value);
       updateControlsSummary();
-      setControlsExpanded(false);
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const s = JSON.parse(raw);
-        if (s.ventInches != null) {
-          const slider = document.getElementById("ventSlider");
-          const ventHidden = document.getElementById("ventInches");
-          if (slider) slider.value = s.ventInches;
-          if (ventHidden) ventHidden.value = s.ventInches;
-          setText("ventLabel", Number(s.ventInches).toFixed(1));
-        }
-        if (s.mode) {
-          const mode = document.getElementById("mode");
-          if (mode) mode.value = s.mode;
-        }
-      } catch (e) {}
-      updateControlsSummary();
-    }
-
-    function saveState(partial) {
-      let base = {};
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) base = JSON.parse(raw) || {};
-      } catch (e) {}
-      const merged = Object.assign({}, base, partial || {});
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      } catch (e) {}
-    }
-
-    function guessVent(inTemp, outTemp, mode) {
-      if (!Number.isFinite(inTemp) || !Number.isFinite(outTemp)) {
-        return {
-          inches: null,
-          text: "No suggestion",
-          note: "Waiting for both inside and outside temperatures."
-        };
-      }
-      const diff = inTemp - outTemp;
-      let base = 1;
-      if (mode === "winter") {
-        if (inTemp < 40) base = 0;
-        else if (diff > 10) base = 0.5;
-        else base = 1;
-      } else if (mode === "wakeup") {
-        base = diff > 12 ? 1 : 1.5;
-      } else {
-        base = diff > 15 ? 2 : 3;
-      }
-      base = Math.max(0, Math.min(10, base));
-      const note =
-        mode === "winter"
-          ? "Keep opening tiny unless inside is far above freezing."
-          : mode === "wakeup"
-          ? "Let some cool air in without shocking the roots."
-          : "Vent more freely during strong growth.";
-      return {
-        inches: base,
-        text: base.toFixed(1) + " in",
-        note
-      };
-    }
-
-    function compute() {
-      const inTemp = parseFloat(
-        document.getElementById("inTempLabel")?.textContent
-      );
-      const outTemp = parseFloat(
-        document.getElementById("outTempLabel")?.textContent
-      );
-      const inHum = parseFloat(
-        document.getElementById("inHumLabel")?.textContent
-      );
-      const lux = parseFloat(
-        document.getElementById("luxLabel")?.textContent
-      );
-      const modeSelect = document.getElementById("mode");
-      const ventHidden = document.getElementById("ventInches");
-      const ventManual = ventHidden ? parseFloat(ventHidden.value) : NaN;
-      const mode = modeSelect ? modeSelect.value : "winter";
-
-      const padOn =
-        Number.isFinite(inTemp) && inTemp < HEAT_THRESHOLD_F ? "ON" : "OFF";
-
-      setText("heatStatus", padOn);
-      const heatNote =
-        !Number.isFinite(inTemp)
-          ? "Waiting for inside temperature read."
-          : padOn === "ON"
-          ? "Inside is below " +
-            HEAT_THRESHOLD_F +
-            " F so the thermostat should be feeding the pad."
-          : "Inside is above " +
-            HEAT_THRESHOLD_F +
-            " F so the pad thermostat should be idle.";
-      setText("heatNote", heatNote);
-
-      const vGuess = guessVent(inTemp, outTemp, mode);
-      const ventSuggestionText = vGuess.text;
-      const ventNote =
-        Number.isFinite(ventManual) && Number.isFinite(vGuess.inches)
-          ? "You set " +
-            ventManual.toFixed(1) +
-            " in, helper suggests about " +
-            vGuess.inches.toFixed(1) +
-            " in."
-          : vGuess.note;
-      setText("ventSuggestion", ventSuggestionText);
-      setText("ventNote", ventNote);
-
-      const luxInfo = luxBucket(lux);
-      updateSkyIcon(luxInfo);
-
-      const actions = [];
-      let summary = "";
-
-      if (!Number.isFinite(inTemp) || !Number.isFinite(outTemp)) {
-        summary =
-          "Waiting for a full set of readings before giving serious advice.";
-        actions.push(
-          "Check Wi Fi and probe connections if values stay blank for a while.",
-          "You can still move the vent slider and use your own judgement."
-        );
-      } else if (mode === "winter") {
-        if (inTemp < 35) {
-          summary =
-            "Roots are in the danger zone. Keep things tightly closed and let the pad work.";
-          actions.push(
-            "Close vents fully or almost fully until inside creeps back above 38 F.",
-            "If a long freeze is coming, consider extra insulation or an emergency blanket."
-          );
-        } else if (inTemp < 45) {
-          summary =
-            "Good winter range. Let the pad quietly maintain soil warmth.";
-          actions.push(
-            "Keep vent opening small, around " +
-              vGuess.inches.toFixed(1) +
-              " in.",
-            "If sky icon shows full sun and lux is high, you can crack the vent a little more for a couple of hours."
-          );
-        } else {
-          summary =
-            "Inside is comfortably above freezing. You can trade a bit of heat for fresh air.";
-          actions.push(
-            "Use the helper suggestion for vent or go slightly higher if lux says full sun.",
-            "If outside suddenly drops while inside stays warm, shrink the vent again toward 0.5 in."
-          );
-        }
-      } else if (mode === "wakeup") {
-        summary =
-          "You are easing the plants out of dormancy. Protect roots but allow a gentle daily swing.";
-        actions.push(
-          "Aim for small daily highs in the low 60s inside, lows near 40 to 45 F.",
-          "On bright calm days open vent toward " +
-            vGuess.inches.toFixed(1) +
-            " in, but close most of the way again near sunset."
-        );
-      } else {
-        summary =
-          "Active growth mode trades some safety margin for faster top growth.";
-        actions.push(
-          "On sunny days with calm wind, it is fine to open vent to " +
-            vGuess.inches.toFixed(1) +
-            " in or your own manual value.",
-          "If a cold front is coming, temporarily behave more like Wake up mode for a day or two."
-        );
-      }
-
-      if (Number.isFinite(inHum)) {
-        if (inHum < 25) {
-          actions.push(
-            "Humidity is very low. Add a tray of water or mist foliage occasionally."
-          );
-        } else if (inHum > 85) {
-          actions.push(
-            "Humidity is high. Favor a bit more venting when temperature allows to avoid mildew."
-          );
-        }
-      }
-
-      setText("summaryLine", summary);
-      const list = document.getElementById("actionsList");
-      if (list) {
-        list.innerHTML = "";
-        actions.forEach((t) => {
-          const li = document.createElement("li");
-          li.textContent = t;
-          list.appendChild(li);
-        });
-      }
-
-      const hintChip = document.getElementById("hintChip");
-      if (hintChip) {
-        if (!Number.isFinite(inTemp) || !Number.isFinite(outTemp)) {
-          hintChip.textContent = "Partial data";
-          hintChip.className = "chip-pill warn";
-        } else if (inTemp < 30) {
-          hintChip.textContent = "Freeze risk";
-          hintChip.className = "chip-pill danger";
-        } else if (inTemp < 40) {
-          hintChip.textContent = "Watch temps";
-          hintChip.className = "chip-pill warn";
-        } else {
-          hintChip.textContent = "Stable for now";
-          hintChip.className = "chip-pill ok";
-        }
-      }
-
-      try {
-        saveState({
-          ventInches: ventManual,
-          mode,
-        });
-      } catch (e) {}
-
-      const now = new Date();
-      const stamp =
-        now.toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        }) +
-        " " +
-        now.toLocaleTimeString(undefined, {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      setText("lastUpdated", stamp);
-      updateControlsSummary();
-    }
-
-    async function fetchUbibot() {
-      try {
-        const res = await fetch(UBI_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-
-        let last = null;
-
-        if (Array.isArray(data.feeds) && data.feeds.length) {
-          last = data.feeds[data.feeds.length - 1];
-        } else if (data.last_values) {
-          last = data.last_values;
-        }
-
-        if (!last) {
-          console.warn("Ubibot data format not recognized", data);
-          return;
-        }
-
-        const tOut = parseFloat(last.field8 ?? last.field4 ?? last.field1);
-        const hOut = parseFloat(last.field2);
-        const tIn = parseFloat(last.field1);
-        const hIn = parseFloat(last.field2);
-        const lux = parseFloat(last.field3);
-
-        if (Number.isFinite(tOut)) setText("outTempLabel", round(tOut, 1));
-        if (Number.isFinite(hOut)) setText("outHumLabel", round(hOut, 0));
-        if (Number.isFinite(tIn)) setText("inTempLabel", round(tIn, 1));
-        if (Number.isFinite(hIn)) setText("inHumLabel", round(hIn, 0));
-        if (Number.isFinite(lux)) setText("luxLabel", round(lux, 0));
-
-        const info = luxBucket(lux);
-        updateSkyIcon(info);
-      } catch (e) {
-        console.warn("Ubibot fetch failed", e);
-        const hintChip = document.getElementById("hintChip");
-        if (hintChip) {
-          hintChip.textContent = "Offline mode";
-          hintChip.className = "chip-pill warn";
-        }
-      }
-    }
-
-    window.addEventListener("load", () => {
-      initTheme();
-      initControls();
-      loadState();
-      fetchUbibot().finally(() => {
-        compute();
-      });
     });
-  </script>
+  }
+
+  if (modeSelect) {
+    modeSelect.addEventListener("change", () => {
+      updateControlsSummary();
+    });
+  }
+
+  const toggle = () => {
+    const body = document.getElementById("controlsBody");
+    if (!body) return;
+    const isOpen = !body.classList.contains("is-collapsed");
+    setControlsOpen(!isOpen);
+  };
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggle();
+    });
+  }
+
+  if (header) {
+    header.addEventListener("click", (e) => {
+      if (toggleBtn && (e.target === toggleBtn || toggleBtn.contains(e.target))) return;
+      toggle();
+    });
+  }
+
+  updateControlsSummary();
+  setControlsOpen(true);
+}
+
+/* auto fetch */
+
+function maybeAutoFetchWeather(){
+  if (!lastWeatherFetchedAt || (Date.now()-lastWeatherFetchedAt)>WEATHER_MAX_AGE_MS) {
+    fetchWeather();
+  } else {
+    const ageMin = Math.round((Date.now()-lastWeatherFetchedAt)/60000);
+    let info = "Outside weather fetched about "+ageMin+" min ago.";
+    if (tomorrowMin!=null && tomorrowMax!=null)
+      info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
+    setText("weatherInfo", info);
+  }
+}
+function maybeAutoFetchWS1(){
+  if (!lastWS1FetchedAt || (Date.now()-lastWS1FetchedAt)>WS1_MAX_AGE_MS) fetchWS1(false);
+  else showStalenessBadges();
+}
+
+/* simple pull to refresh on touch */
+
+(function enablePTR(){
+  let startY=0, pulling=false, bar=null;
+  function ensureBar(){
+    if (bar) return bar;
+    bar = document.createElement("div");
+    bar.style.position="fixed"; bar.style.top="0"; bar.style.left="0"; bar.style.right="0";
+    bar.style.height="0px"; bar.style.background="rgba(56,189,248,0.12)";
+    bar.style.backdropFilter="blur(6px)"; bar.style.color="#374151";
+    bar.style.fontSize="12px"; bar.style.display="flex"; bar.style.alignItems="center"; bar.style.justifyContent="center";
+    bar.style.transition="height .15s ease";
+    bar.style.zIndex="9999";
+    bar.textContent="Refreshing greenhouse plan";
+    document.body.appendChild(bar);
+    return bar;
+  }
+  window.addEventListener("touchstart",e=>{
+    if (document.scrollingElement.scrollTop===0){
+      startY=e.touches[0].clientY; pulling=true;
+    }
+  });
+  window.addEventListener("touchmove",e=>{
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy>10){
+      const b=ensureBar();
+      b.style.height = Math.min(60, dy/2)+"px";
+    }
+  });
+  window.addEventListener("touchend",async ()=>{
+    if (!pulling) return; pulling=false;
+    if (!bar) return;
+    bar.style.height="20px";
+    await Promise.all([fetchWeather(), fetchWS1(true)]);
+    compute();
+    setTimeout(()=>{ if(bar) bar.style.height="0px"; }, 500);
+  });
+})();
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.body.classList.toggle("theme-dark", isDark);
+  const icon = document.getElementById("themeToggleIcon");
+  const label = document.getElementById("themeToggleLabel");
+  if (icon && label) {
+    if (isDark) {
+      icon.textContent = "🌙";
+      label.textContent = "Dark mode";
+    } else {
+      icon.textContent = "☀️";
+      label.textContent = "Light mode";
+    }
+  }
+}
+
+function initTheme() {
+  let stored = null;
+  try {
+    stored = localStorage.getItem(THEME_KEY);
+  } catch (e) {}
+  if (stored !== "light" && stored !== "dark") stored = "light";
+  applyTheme(stored);
+  const btn = document.getElementById("themeToggle");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const isDark = document.body.classList.contains("theme-dark");
+      const next = isDark ? "light" : "dark";
+      try {
+        localStorage.setItem(THEME_KEY, next);
+      } catch (e) {}
+      applyTheme(next);
+    });
+  }
+}
+
+/* boot */
+
+window.addEventListener("load", () => {
+  initTheme();
+  initControls();
+  loadState();
+  maybeAutoFetchWeather();
+  maybeAutoFetchWS1();
+  compute();
+  setInterval(()=>{ fetchWS1(false).then(()=>compute()); }, 5*60*1000);
+});
+</script>
 </body>
 </html>
