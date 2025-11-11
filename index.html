@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Greenhouse Helper – Clean Cards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.12);
+      --accent-blue: #38bdf8;
+      --border-subtle: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --ok: #16a34a;
+      --shadow-soft: 0 14px 35px rgba(15,23,42,0.12);
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #d1fae5 0, #f3f4f6 40%, #e5e7eb 100%);
+      color: var(--text-main);
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto 18px;
+    }
+
+    header {
+      padding: 8px 2px 10px;
+    }
+    header h1 {
+      font-size: 1.0rem;
+      margin: 0 0 2px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0f172a;
+    }
+    header small {
+      display: block;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    .meta {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 12px 12px 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+    }
+    .card-title {
+      font-size: 0.78rem;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+    .stat-tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e5f3ff;
+      color: #1d4ed8;
+    }
+    .stat-main {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .stat-main .value {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .stat-main .unit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .stat-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* tiny arc gauge */
+    .mini-arc {
+      position: relative;
+      width: 90px;
+      height: 44px;
+      border-radius: 90px 90px 0 0;
+      overflow: hidden;
+      background: linear-gradient(to right,#22c55e,#eab308,#f97316,#ef4444);
+      margin: 4px 0 2px;
+    }
+    .mini-arc-inner {
+      position: absolute;
+      inset: 8px;
+      border-radius: 90px 90px 0 0;
+      background: #f9fafb;
+    }
+    .mini-needle {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 2px;
+      height: 40px;
+      transform-origin: bottom center;
+      background: #111827;
+      box-shadow: 0 0 4px rgba(15,23,42,0.65);
+      transform: rotate(0deg);
+    }
+    .mini-center {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 8px;
+      height: 8px;
+      margin-left: -4px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+    }
+
+    /* heat + sky strip */
+    .status-strip {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .chip-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+    }
+    .chip-heat.on {
+      border-color: rgba(34,197,94,0.9);
+      background: #ecfdf5;
+      color: #166534;
+    }
+    .chip-heat.off {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1e40af;
+    }
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #9ca3af;
+    }
+    .chip-heat.on .chip-dot {
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34,197,94,0.9);
+    }
+    .chip-heat.off .chip-dot {
+      background: #3b82f6;
+      box-shadow: 0 0 4px rgba(59,130,246,0.9);
+    }
+
+    .chip span.value {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* controls */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    .field-row span.value {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      outline: none;
+      border: 1px solid var(--border-subtle);
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 8px rgba(34,197,94,0.9);
+      margin-top: -6px;
+    }
+
+    .mode-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 0.78rem;
+    }
+    select {
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+      color: var(--text-main);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .primary-btn {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent));
+      color: white;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 34px rgba(15,23,42,0.42);
+    }
+    .primary-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 18px rgba(15,23,42,0.5);
+    }
+
+    #statusBox {
+      font-size: 0.8rem;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid transparent;
+    }
+    .status-ok { border-color: rgba(34,197,94,0.7); color: var(--ok); }
+    .status-warn { border-color: rgba(245,158,11,0.9); color: var(--warn); }
+    .status-bad { border-color: rgba(239,68,68,0.9); color: var(--danger); }
+
+    #summary {
+      font-size: 0.78rem;
+      margin-top: 6px;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .chips-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 0.76rem;
+    }
+    .chip-col {
+      padding: 6px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #f9fafb;
+    }
+    .chip-col span.label {
+      display: block;
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .hidden-inputs { display:none; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Greenhouse Helper</h1>
+    <small>Ferns in bubble, lemongrass wrapped, zone 7b.</small>
+    <div id="weatherInfo" class="meta"></div>
+    <div id="ws1Info" class="meta"></div>
+    <div id="lastUpdated" class="meta"></div>
+  </header>
+
+  <!-- Now card -->
+  <div class="card">
+    <div class="card-title">Now</div>
+
+    <div class="status-strip">
+      <div id="heatChip" class="chip chip-heat off">
+        <span class="chip-dot"></span>
+        <span class="chip-label">Heat</span>
+        <span id="heatChipText" class="value">Standby</span>
+      </div>
+      <div class="chip">
+        <span class="chip-label">Sky</span>
+        <span id="skyLabel" class="value">No reading</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="stat">
+        <div class="stat-header">
+          <span class="stat-label">Outside</span>
+          <span class="stat-tag">Ambient</span>
+        </div>
+        <div class="mini-arc">
+          <div class="mini-arc-inner"></div>
+          <div id="outsideNeedle" class="mini-needle"></div>
+          <div class="mini-center"></div>
+        </div>
+        <div class="stat-main">
+          <span class="value"><span id="outsideTempDisplay"> - </span></span>
+          <span class="unit">°F</span>
+        </div>
+        <div class="stat-sub">
+          <span id="outsideHumDisplay"> - </span> % RH
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-header">
+          <span class="stat-label">Inside (WS1)</span>
+          <span class="stat-tag">Bubble</span>
+        </div>
+        <div class="mini-arc">
+          <div class="mini-arc-inner"></div>
+          <div id="insideNeedle" class="mini-needle"></div>
+          <div class="mini-center"></div>
+        </div>
+        <div class="stat-main">
+          <span class="value"><span id="insideTempDisplay"> - </span></span>
+          <span class="unit">°F</span>
+        </div>
+        <div class="stat-sub">
+          <span id="insideHumDisplay"> - </span> % RH ·
+          <span id="insideLight">no light yet</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-title">Controls</div>
+
+    <div class="field">
+      <div class="field-row">
+        <span>Top vent opening</span>
+        <span class="value"><span id="ventLabel">1.0</span> in</span>
+      </div>
+      <input type="range" id="ventSlider" min="0" max="10" step="0.5" value="1.0">
+    </div>
+
+    <div class="mode-row">
+      <span>Mode</span>
+      <select id="mode">
+        <option value="dormant">Dormant</option>
+        <option value="wakeup">Wake up</option>
+        <option value="active">Active</option>
+      </select>
+    </div>
+
+    <button type="button" class="primary-btn" onclick="compute()">Update plan</button>
+  </div>
+
+  <!-- Status and plan -->
+  <div class="card">
+    <div class="card-title">Status and plan</div>
+    <div id="statusBox"></div>
+    <div id="summary"></div>
+
+    <div class="chips-3">
+      <div class="chip-col">
+        <span class="label">Today</span>
+        <div id="todayRec"></div>
+      </div>
+      <div class="chip-col">
+        <span class="label">Tonight</span>
+        <div id="tonightRec"></div>
+      </div>
+      <div class="chip-col">
+        <span class="label">Tomorrow</span>
+        <div id="tomorrowRec"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data model -->
+  <div class="hidden-inputs">
+    <input type="number" id="outsideTemp" value="35" />
+    <input type="number" id="outsideHum" value="60" />
+    <input type="number" id="insideTemp" value="47" />
+    <input type="number" id="insideHum" value="75" />
+    <input type="number" id="ventInches" value="1.0" />
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY      = "greenhouseHelperState_v15";
+const WEATHER_MAX_AGE_MS = 60 * 60 * 1000;
+const WS1_MAX_AGE_MS     = 10 * 60 * 1000;
+const HEAT_SETPOINT      = 50;
+
+const UBIBOT_CHANNEL_ID = "116552";
+const UBIBOT_API_KEY    = "1b96d5173ae6435faaf2f61f474af06d";
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+function num(id) { return parseFloat(document.getElementById(id).value); }
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+function gaugeAngleFromTemp(t) {
+  if (isNaN(t)) return -120;
+  const clamped = clamp(t, 0, 100);
+  return -120 + (clamped / 100) * 240;
+}
+function updateGauges() {
+  const ot = num("outsideTemp");
+  const it = num("insideTemp");
+  const on = document.getElementById("outsideNeedle");
+  const inn = document.getElementById("insideNeedle");
+  if (on)  on.style.transform  = "rotate(" + gaugeAngleFromTemp(ot) + "deg)";
+  if (inn) inn.style.transform = "rotate(" + gaugeAngleFromTemp(it) + "deg)";
+}
+function mirrorDisplays() {
+  const ot = num("outsideTemp"), oh = num("outsideHum");
+  const it = num("insideTemp"), ih = num("insideHum");
+  if (!isNaN(ot)) setText("outsideTempDisplay", Math.round(ot));
+  if (!isNaN(oh)) setText("outsideHumDisplay", Math.round(oh));
+  if (!isNaN(it)) setText("insideTempDisplay", Math.round(it));
+  if (!isNaN(ih)) setText("insideHumDisplay", Math.round(ih));
+  updateGauges();
+}
+
+function describeVent(v) {
+  if (v <= 0.25) return "fully closed";
+  if (v <= 1)    return "barely cracked";
+  if (v <= 3)    return "slightly open";
+  if (v <= 6)    return "moderately open";
+  return "wide open";
+}
+
+/* Lux helpers */
+
+function getLuxInfo(lx) {
+  if (lx == null || isNaN(lx)) {
+    return { bucket:null, label:"no reading", note:"Sensor has no recent light value yet." };
+  }
+  let bucket, label, note;
+  if (lx < 10) {
+    bucket = "night";
+    label  = "night";
+    note   = "Sky is dark. Bubble only loses heat right now.";
+  } else if (lx < 80) {
+    bucket = "very_low";
+    label  = "very dim";
+    note   = "Heavy cloud or dawn / dusk. Expect only gentle warming from the sky.";
+  } else if (lx < 300) {
+    bucket = "cloudy";
+    label  = "cloudy";
+    note   = "Soft overcast light. Bubble will warm a bit but slowly.";
+  } else if (lx < 1200) {
+    bucket = "bright";
+    label  = "bright shade";
+    note   = "Bright but indirect sky. Bubble should gain some heat while this lasts.";
+  } else {
+    bucket = "full_sun";
+    label  = "full sun";
+    note   = "Strong sun on plastic. Inside can climb quickly if the vent is tight.";
+  }
+  return { bucket, label, note };
+}
+function getCurrentLux() {
+  const el = document.getElementById("insideLight");
+  if (!el) return NaN;
+  if (el.dataset && el.dataset.lastLux) return parseFloat(el.dataset.lastLux);
+  const m = (el.textContent || "").match(/(\d+)\s*lux/);
+  return m ? parseFloat(m[1]) : NaN;
+}
+
+function updateHeatAndSky(insideT, luxInfo) {
+  const heatOn = insideT < HEAT_SETPOINT;
+  const chip   = document.getElementById("heatChip");
+  const chipTxt= document.getElementById("heatChipText");
+  if (chip && chipTxt) {
+    chip.classList.remove("on","off");
+    chip.classList.add(heatOn ? "on" : "off");
+    chipTxt.textContent = heatOn
+      ? "On - pushing toward 50 °F"
+      : "Standby - above 50 °F";
+  }
+  if (!luxInfo) luxInfo = getLuxInfo(getCurrentLux());
+  const skyLabel = document.getElementById("skyLabel");
+  if (skyLabel && luxInfo) {
+    const lx = getCurrentLux();
+    let text = luxInfo.label;
+    if (!isNaN(lx)) text = luxInfo.label + " (" + Math.round(lx) + " lux)";
+    skyLabel.textContent = text;
+    if (luxInfo.note) skyLabel.title = luxInfo.note;
+  }
+}
+
+/* State */
+
+let lastWeatherFetchedAt = null;
+let lastWS1FetchedAt     = null;
+let todayMin=null,todayMax=null,tomorrowMin=null,tomorrowMax=null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    for (const k of ["outsideTemp","outsideHum","insideTemp","insideHum","ventInches"]) {
+      if (s[k] != null && document.getElementById(k)) {
+        document.getElementById(k).value = s[k];
+      }
+    }
+    if (s.ventInches != null) {
+      document.getElementById("ventSlider").value = s.ventInches;
+      setText("ventLabel", s.ventInches);
+    }
+    if (s.mode) document.getElementById("mode").value = s.mode;
+    if (s.lastUpdated) setText("lastUpdated","Last updated: "+s.lastUpdated);
+    if (s.statusHTML) {
+      const box = document.getElementById("statusBox");
+      box.className = s.statusClass || "";
+      box.textContent = s.statusHTML;
+    }
+    if (s.summary) setText("summary", s.summary);
+    if (s.todayRec) setText("todayRec", s.todayRec);
+    if (s.tonightRec) setText("tonightRec", s.tonightRec);
+    if (s.tomorrowRec) setText("tomorrowRec", s.tomorrowRec);
+    lastWeatherFetchedAt = s.weatherFetchedAt || null;
+    lastWS1FetchedAt     = s.ws1FetchedAt || null;
+    todayMin    = s.todayMin    ?? todayMin;
+    todayMax    = s.todayMax    ?? todayMax;
+    tomorrowMin = s.tomorrowMin ?? tomorrowMin;
+    tomorrowMax = s.tomorrowMax ?? tomorrowMax;
+    mirrorDisplays();
+    showStalenessBadges();
+    updateHeatAndSky(num("insideTemp"), getLuxInfo(getCurrentLux()));
+  } catch(e){ console.warn("loadState failed", e); }
+}
+
+function saveState(extra) {
+  const base = {
+    outsideTemp:num("outsideTemp"),
+    outsideHum:num("outsideHum"),
+    insideTemp:num("insideTemp"),
+    insideHum:num("insideHum"),
+    ventInches:num("ventInches"),
+    mode:document.getElementById("mode").value,
+    weatherFetchedAt:lastWeatherFetchedAt,
+    ws1FetchedAt:lastWS1FetchedAt,
+    todayMin,todayMax,tomorrowMin,tomorrowMax
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.assign(base, extra || {})));
+  } catch(e){}
+}
+
+/* Weather */
+
+async function fetchWeather() {
+  try {
+    setText("weatherInfo","Updating current and forecast weather for Troy, NC...");
+    const lat = 35.36, lon = -79.89;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&daily=temperature_2m_min,temperature_2m_max&timezone=auto`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+
+    if (data.current_weather && typeof data.current_weather.temperature === "number") {
+      const tempF = data.current_weather.temperature * 9/5 + 32;
+      document.getElementById("outsideTemp").value = tempF.toFixed(1);
+    }
+    let hum = null;
+    if (data.hourly && data.hourly.relativehumidity_2m && data.hourly.time && data.current_weather) {
+      const idx = data.hourly.time.indexOf(data.current_weather.time);
+      if (idx >= 0) hum = data.hourly.relativehumidity_2m[idx];
+    }
+    if (hum == null && data.hourly && data.hourly.relativehumidity_2m) hum = data.hourly.relativehumidity_2m[0];
+    if (hum != null) document.getElementById("outsideHum").value = Math.round(hum);
+
+    if (data.daily && Array.isArray(data.daily.temperature_2m_min) && data.daily.temperature_2m_min.length >= 2) {
+      todayMin    = data.daily.temperature_2m_min[0]*9/5+32;
+      todayMax    = data.daily.temperature_2m_max[0]*9/5+32;
+      tomorrowMin = data.daily.temperature_2m_min[1]*9/5+32;
+      tomorrowMax = data.daily.temperature_2m_max[1]*9/5+32;
+    }
+    lastWeatherFetchedAt = Date.now();
+    let info = "Outside weather updated just now for Troy, NC.";
+    if (tomorrowMin!=null && tomorrowMax!=null) {
+      info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
+    }
+    setText("weatherInfo", info);
+    mirrorDisplays();
+  } catch(e) {
+    console.error(e);
+    setText("weatherInfo","Weather fetch failed, using last saved outside values.");
+  }
+}
+
+function showStalenessBadges(){
+  if (lastWeatherFetchedAt){
+    const age = Date.now()-lastWeatherFetchedAt;
+    if (age>WEATHER_MAX_AGE_MS){
+      setText("weatherInfo","Outside weather is stale (over 1 hour). Pull to refresh or tap Update plan.");
+    }
+  }
+  if (lastWS1FetchedAt){
+    const age = Date.now()-lastWS1FetchedAt;
+    const min = Math.round(age/60000);
+    let msg = "Inside sensor updated "+min+" min ago.";
+    if (age>WS1_MAX_AGE_MS) msg = "Inside sensor data is stale ("+min+" min). Retrying soon.";
+    const node = document.getElementById("insideLight");
+    if (node && node.dataset.lastLux) {
+      msg += " · Light "+node.dataset.lastLux+" lux";
+    }
+    setText("ws1Info", msg);
+  }
+}
+
+/* WS1 sensor */
+
+async function fetchWS1(forceLog){
+  const url = `https://webapi.ubibot.com/channels/${UBIBOT_CHANNEL_ID}?api_key=${UBIBOT_API_KEY}`;
+  try{
+    if (forceLog) console.log("WS1 GET", url);
+    const res = await fetch(url, {cache:"no-store"});
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const json = await res.json();
+    const ch = json.channel;
+    if (!ch || !ch.last_values) throw new Error("No last_values in WS1 response");
+
+    const last = JSON.parse(ch.last_values);
+    const tRaw  = last.field1 && Number(last.field1.value);
+    const hRaw  = last.field2 && Number(last.field2.value);
+    const light = last.field3 && Number(last.field3.value);
+
+    if (tRaw==null || isNaN(tRaw) || hRaw==null || isNaN(hRaw))
+      throw new Error("Missing temp or humidity");
+
+    const tempF = tRaw < 60 ? (tRaw*9/5+32) : tRaw;
+
+    if (tempF < 10 || tempF > 120) throw new Error("Outlier tempF="+tempF);
+    if (hRaw  < 0  || hRaw  > 100) throw new Error("Outlier humidity="+hRaw);
+
+    document.getElementById("insideTemp").value = tempF.toFixed(1);
+    document.getElementById("insideHum").value  = Math.round(hRaw);
+
+    if (!isNaN(light)){
+      const lx   = Math.round(light);
+      const info = getLuxInfo(lx);
+      const node = document.getElementById("insideLight");
+      if (node) {
+        node.textContent = lx+" lux · "+info.label;
+        node.dataset.lastLux   = lx;
+        node.dataset.luxBucket = info.bucket || "";
+        node.dataset.luxNote   = info.note || "";
+      }
+    }
+
+    lastWS1FetchedAt = Date.now();
+    showStalenessBadges();
+    mirrorDisplays();
+    updateHeatAndSky(num("insideTemp"), getLuxInfo(getCurrentLux()));
+    return true;
+  }catch(err){
+    console.error("WS1 fetch failed:", err);
+    if (lastWS1FetchedAt && (Date.now()-lastWS1FetchedAt)<(3*60*60*1000)){
+      showStalenessBadges();
+      mirrorDisplays();
+      return false;
+    }else{
+      setText("ws1Info","Could not retrieve inside sensor right now.");
+      return false;
+    }
+  }
+}
+
+/* Plan logic */
+
+function compute() {
+  mirrorDisplays();
+
+  let insideT = num("insideTemp");
+  let vent    = clamp(num("ventInches"),0,10);
+  document.getElementById("ventInches").value = vent;
+  document.getElementById("ventSlider").value = vent;
+  setText("ventLabel", vent.toFixed(1));
+  const mode = document.getElementById("mode").value;
+
+  const heatOn = insideT < HEAT_SETPOINT;
+  const lux    = getCurrentLux();
+  const luxInfo = getLuxInfo(lux);
+  updateHeatAndSky(insideT, luxInfo);
+
+  let statusClass="status-ok";
+  let statusMsg = heatOn
+      ? "Heating pad should be on, nudging the bubble toward 50 °F."
+      : "Heating pad is likely off, bubble is holding itself above 50 °F.";
+
+  if (mode==="dormant"){
+    if (insideT<40){
+      statusClass="status-bad";
+      statusMsg += " Inside is colder than ideal for safe dormancy.";
+    } else if (insideT>60){
+      statusClass="status-warn";
+      statusMsg += " Inside is warmer than ideal for dormancy.";
+    } else {
+      statusMsg += " Temperature is in a good dormancy band.";
+    }
+  }else if(mode==="wakeup"){
+    if (insideT<45) statusMsg += " On the cool side for wake up.";
+    if (insideT>65){
+      statusClass="status-warn";
+      statusMsg += " A bit warm for wake up, use more vent on bright spells.";
+    }
+  }else{
+    if (insideT<55) statusMsg += " Cool for active growth.";
+    if (insideT>75){
+      statusClass="status-warn";
+      statusMsg += " Quite warm, increase venting or shade.";
+    }
+  }
+
+  let todayRec, tonightRec, tomorrowRec;
+
+  if (insideT >= 60)      todayRec = "Open top vent 3 - 6 in at midday and drift back to 1 - 2 in late afternoon.";
+  else if (insideT >= 50) todayRec = "Use a modest 2 - 4 in crack while the sun is on the plastic, under 2 in otherwise.";
+  else if (insideT >= 45) todayRec = "Keep vent 1 - 2 in; try a brief 2 - 3 in airing if condensation is streaming.";
+  else                    todayRec = "Hold the vent tight at 0 - 1 in so the pad can keep up with the chill.";
+
+  let nightLow = (tomorrowMin!=null) ? tomorrowMin : todayMin;
+  if (nightLow != null){
+    const n = Math.round(nightLow);
+    if (n < 25)      tonightRec = "Seal vent to 0 - 0.5 in with forecast near "+n+" °F.";
+    else if (n <=35) tonightRec = "Keep 0.5 - 1.5 in with forecast near "+n+" °F.";
+    else             tonightRec = "Mild night around "+n+" °F - 1 - 3 in is fine.";
+  }else{
+    tonightRec = "Cool nights - 0 - 1 in. Mild nights - 1 - 3 in.";
+  }
+
+  if (tomorrowMin!=null && tomorrowMax!=null){
+    const lo = Math.round(tomorrowMin), hi = Math.round(tomorrowMax);
+    if (mode==="dormant"){
+      if (hi >= 60)      tomorrowRec = "Plan for 3 - 6 in at midday around "+lo+" - "+hi+" °F, then drop under 2 in by sunset.";
+      else if (hi <= 45) tomorrowRec = "Stay tight 0 - 1 in most of the day around "+lo+" - "+hi+" °F.";
+      else               tomorrowRec = "Use a short window of 2 - 4 in while brightest around "+lo+" - "+hi+" °F.";
+    }else if(mode==="wakeup"){
+      tomorrowRec = "Let vent reach 3 - 6 in a bit longer with tomorrow around "+lo+" - "+hi+" °F.";
+    }else{
+      tomorrowRec = "Use 4 - 8 in in warm spells around "+lo+" - "+hi+" °F, easing back to 2 - 3 in later.";
+    }
+  }else{
+    tomorrowRec = "Mirror today - wider with warmth and sun, tighter with cold or cloud.";
+  }
+
+  const box = document.getElementById("statusBox");
+  box.className = "";
+  box.classList.add(statusClass);
+  box.textContent = statusMsg;
+
+  let lightLine = "";
+  if (luxInfo && luxInfo.label) {
+    lightLine = "Light now is "+luxInfo.label+". "+(luxInfo.note || "");
+  }
+
+  const summary = "Thermostat target about "+HEAT_SETPOINT+" °F. Vent is "+describeVent(vent)+". "+lightLine+" • Today: "+todayRec+" • Tonight: "+tonightRec+" • Tomorrow: "+tomorrowRec;
+  setText("summary", summary);
+
+  setText("todayRec", todayRec);
+  setText("tonightRec", tonightRec);
+  setText("tomorrowRec", tomorrowRec);
+
+  const stamp = new Date().toLocaleString();
+  setText("lastUpdated","Last updated: "+stamp);
+  saveState({
+    lastUpdated: stamp,
+    statusHTML: statusMsg,
+    statusClass,
+    summary,
+    todayRec, tonightRec, tomorrowRec
+  });
+}
+
+/* controls */
+
+function initControls(){
+  const vSlider = document.getElementById("ventSlider");
+  vSlider.addEventListener("input", () => {
+    document.getElementById("ventInches").value = vSlider.value;
+    setText("ventLabel", vSlider.value);
+  });
+}
+
+/* auto fetch */
+
+function maybeAutoFetchWeather(){
+  if (!lastWeatherFetchedAt || (Date.now()-lastWeatherFetchedAt)>WEATHER_MAX_AGE_MS) {
+    fetchWeather();
+  } else {
+    const ageMin = Math.round((Date.now()-lastWeatherFetchedAt)/60000);
+    let info = "Outside weather fetched about "+ageMin+" min ago.";
+    if (tomorrowMin!=null && tomorrowMax!=null)
+      info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
+    setText("weatherInfo", info);
+  }
+}
+function maybeAutoFetchWS1(){
+  if (!lastWS1FetchedAt || (Date.now()-lastWS1FetchedAt)>WS1_MAX_AGE_MS) fetchWS1(false);
+  else showStalenessBadges();
+}
+
+/* simple pull to refresh on touch */
+
+(function enablePTR(){
+  let startY=0, pulling=false, bar=null;
+  function ensureBar(){
+    if (bar) return bar;
+    bar = document.createElement("div");
+    bar.style.position="fixed"; bar.style.top="0"; bar.style.left="0"; bar.style.right="0";
+    bar.style.height="0px"; bar.style.background="rgba(56,189,248,0.12)";
+    bar.style.backdropFilter="blur(6px)"; bar.style.color="#374151";
+    bar.style.fontSize="12px"; bar.style.display="flex"; bar.style.alignItems="center"; bar.style.justifyContent="center";
+    bar.style.transition="height .15s ease";
+    bar.style.zIndex="9999";
+    bar.textContent="Refreshing greenhouse plan";
+    document.body.appendChild(bar);
+    return bar;
+  }
+  window.addEventListener("touchstart",e=>{
+    if (document.scrollingElement.scrollTop===0){
+      startY=e.touches[0].clientY; pulling=true;
+    }
+  });
+  window.addEventListener("touchmove",e=>{
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy>10){
+      const b=ensureBar();
+      b.style.height = Math.min(60, dy/2)+"px";
+    }
+  });
+  window.addEventListener("touchend",async ()=>{
+    if (!pulling) return; pulling=false;
+    if (!bar) return;
+    bar.style.height="20px";
+    await Promise.all([fetchWeather(), fetchWS1(true)]);
+    compute();
+    setTimeout(()=>{ if(bar) bar.style.height="0px"; }, 500);
+  });
+})();
+
+/* boot */
+
+window.addEventListener("load", () => {
+  initControls();
+  loadState();
+  maybeAutoFetchWeather();
+  maybeAutoFetchWS1();
+  compute();
+  setInterval(()=>{ fetchWS1(false).then(()=>compute()); }, 5*60*1000);
+});
+</script>
+</body>
+</html>
