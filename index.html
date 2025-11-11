@@ -339,6 +339,142 @@
       color: var(--text-muted);
     }
 
+    /* Controls card header and collapse */
+
+.controls-card {
+  position: relative;
+}
+
+.controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.controls-summary {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.controls-toggle-btn {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.controls-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.controls-body {
+  margin-top: 0.75rem;
+}
+
+/* SKY icon */
+
+.sky-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sky-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Theme toggle */
+
+.theme-card {
+  margin-top: 1rem;
+}
+
+.theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.theme-label {
+  font-weight: 600;
+}
+
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.theme-toggle input {
+  display: none;
+}
+
+.theme-toggle-knob {
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--accent-soft);
+  position: relative;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.theme-toggle-knob::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
+  transition: transform 150ms ease;
+}
+
+body.dark-theme .theme-toggle-knob {
+  background: var(--accent-blue-soft, rgba(56, 189, 248, 0.25));
+}
+
+/* move the knob when dark is on */
+body.dark-theme .theme-toggle-knob::before {
+  transform: translateX(16px);
+}
+
+/* Dark theme variables */
+
+:root[data-theme="dark"] {
+  --bg: #020617;
+  --card-bg: #020617;
+  --accent: #22c55e;
+  --accent-soft: rgba(34, 197, 94, 0.25);
+  --accent-blue: #38bdf8;
+  --border-subtle: #1f2937;
+  --border-strong: #374151;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.8);
+}
+
+body.dark-theme {
+  background:
+    radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+  color: var(--text-main);
+}
+
+    
     .hidden-inputs { display:none; }
   </style>
 </head>
@@ -362,10 +498,12 @@
         <span class="chip-label">Heat</span>
         <span id="heatChipText" class="value">Standby</span>
       </div>
-      <div class="chip">
-        <span class="chip-label">Sky</span>
-        <span id="skyLabel" class="value">No reading</span>
-      </div>
+<div class="chip sky-chip">
+  <span id="skyIcon" class="sky-icon" aria-hidden="true">⛅️</span>
+  <div class="chip-label">SKY</div>
+  <div class="chip-value" id="skyLabel">No reading</div>
+</div>
+
     </div>
 
     <div class="grid-2">
@@ -411,19 +549,33 @@
   </div>
 
   <!-- Controls -->
-  <div class="card">
-    <div class="card-title">Controls</div>
+<div class="card controls-card">
+  <div class="card-title controls-header">
+    <span class="controls-summary" id="controlsSummary">
+      Controls | Mode: Winter - Vent: 1.0 in.
+    </span>
+    <button
+      type="button"
+      class="controls-toggle-btn"
+      id="controlsToggle"
+      aria-expanded="false"
+    >
+      Expand
+    </button>
+  </div>
 
+  <div id="controlsBody" class="controls-body">
     <div class="field">
+      <label for="ventSlider">Vent opening</label>
       <div class="field-row">
-        <span>Top vent opening</span>
-        <span class="value"><span id="ventLabel">1.0</span> in</span>
+        <input id="ventSlider" type="range" min="0" max="10" step="0.5" value="1">
+        <div class="field-value"><span id="ventLabel">1.0</span> in</div>
       </div>
-      <input type="range" id="ventSlider" min="0" max="10" step="0.5" value="1.0">
+      <input type="hidden" id="ventInches" value="1">
     </div>
 
     <div class="mode-row">
-      <span>Mode</span>
+      <label for="mode">Mode</label>
       <select id="mode">
         <option value="dormant">Winter</option>
         <option value="wakeup">Wake up</option>
@@ -433,6 +585,8 @@
 
     <button type="button" class="primary-btn" onclick="compute()">Update</button>
   </div>
+</div>
+
 
   <!-- Status and plan -->
   <div class="card">
@@ -455,6 +609,16 @@
       </div>
     </div>
   </div>
+<div class="card theme-card">
+  <div class="theme-row">
+    <span class="theme-label">Theme</span>
+    <label class="theme-toggle">
+      <span id="themeToggleLabel">Light</span>
+      <input id="themeToggle" type="checkbox">
+      <span class="theme-toggle-knob"></span>
+    </label>
+  </div>
+</div>
 
   <!-- Data model -->
   <div class="hidden-inputs">
@@ -471,6 +635,9 @@ const STORAGE_KEY      = "greenhouseHelperState_v15";
 const WEATHER_MAX_AGE_MS = 60 * 60 * 1000;
 const WS1_MAX_AGE_MS     = 10 * 60 * 1000;
 const HEAT_SETPOINT      = 50;
+
+const THEME_KEY = "greenhouseHelperTheme";
+
 
 const UBIBOT_CHANNEL_ID = "116552";
 const UBIBOT_API_KEY    = "1b96d5173ae6435faaf2f61f474af06d";
@@ -613,6 +780,14 @@ function loadState() {
     mirrorDisplays();
     showStalenessBadges();
     updateHeatAndSky(num("insideTemp"), getLuxInfo(getCurrentLux()));
+        if (s.ventInches != null) {
+      document.getElementById("ventSlider").value = s.ventInches;
+      setText("ventLabel", s.ventInches);
+    }
+    if (s.mode) document.getElementById("mode").value = s.mode;
+
+    updateControlsSummary();
+
   } catch(e){ console.warn("loadState failed", e); }
 }
 
@@ -857,18 +1032,131 @@ function compute() {
     summary,
     todayRec, tonightRec, tomorrowRec
   });
+    updateControlsSummary();
+  setControlsExpanded(false);
 }
 
 /* controls */
 
-function initControls(){
-  const vSlider = document.getElementById("ventSlider");
-  vSlider.addEventListener("input", () => {
-    document.getElementById("ventInches").value = vSlider.value;
-    setText("ventLabel", vSlider.value);
+function initControls() {
+  const slider = document.getElementById("ventSlider");
+  const label = document.getElementById("ventLabel");
+  const hidden = document.getElementById("ventInches");
+  const modeSelect = document.getElementById("mode");
+  const toggle = document.getElementById("controlsToggle");
+
+  if (!slider || !label || !hidden) return;
+
+  slider.addEventListener("input", () => {
+    const v = Number(slider.value);
+    label.textContent = v.toFixed(1);
+    hidden.value = v;
+    updateControlsSummary();
   });
+
+  if (modeSelect) {
+    modeSelect.addEventListener("change", () => {
+      updateControlsSummary();
+    });
+  }
+
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      setControlsExpanded(!expanded);
+    });
+  }
+
+  // start collapsed but with accurate summary
+  updateControlsSummary();
+  setControlsExpanded(false);
 }
 
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  const body = document.body;
+  const isDark = theme === "dark";
+
+  if (root) {
+    root.setAttribute("data-theme", isDark ? "dark" : "light");
+  }
+  if (body) {
+    body.classList.toggle("dark-theme", isDark);
+  }
+
+  const label = document.getElementById("themeToggleLabel");
+  const toggle = document.getElementById("themeToggle");
+  if (label) label.textContent = isDark ? "Dark" : "Light";
+  if (toggle && toggle.checked !== isDark) {
+    toggle.checked = isDark;
+  }
+}
+
+function initTheme() {
+  let stored = null;
+  try {
+    stored = localStorage.getItem(THEME_KEY);
+  } catch (e) {
+    // ignore storage errors
+  }
+
+  const prefersDark =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const theme =
+    stored === "light" || stored === "dark"
+      ? stored
+      : prefersDark
+      ? "dark"
+      : "light";
+
+  applyTheme(theme);
+
+  const toggle = document.getElementById("themeToggle");
+  if (toggle) {
+    toggle.addEventListener("change", () => {
+      const newTheme = toggle.checked ? "dark" : "light";
+      applyTheme(newTheme);
+      try {
+        localStorage.setItem(THEME_KEY, newTheme);
+      } catch (e) {
+        // ignore
+      }
+    });
+  }
+}
+
+function setControlsExpanded(expanded) {
+  const body = document.getElementById("controlsBody");
+  const toggle = document.getElementById("controlsToggle");
+  if (!body || !toggle) return;
+
+  body.style.display = expanded ? "block" : "none";
+  toggle.textContent = expanded ? "Collapse" : "Expand";
+  toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+}
+
+function updateControlsSummary() {
+  const modeSelect = document.getElementById("mode");
+  const ventLabel = document.getElementById("ventLabel");
+  const summaryEl = document.getElementById("controlsSummary");
+
+  if (!summaryEl || !modeSelect || !ventLabel) return;
+
+  const modeText =
+    modeSelect.options[modeSelect.selectedIndex]?.text ||
+    modeSelect.value ||
+    "Unknown";
+
+  const ventText = ventLabel.textContent || "?";
+
+  summaryEl.textContent =
+    "Controls | Mode: " + modeText + " - Vent: " + ventText + " in.";
+}
+
+  
 /* auto fetch */
 
 function maybeAutoFetchWeather(){
@@ -930,6 +1218,7 @@ function maybeAutoFetchWS1(){
 /* boot */
 
 window.addEventListener("load", () => {
+  initTheme();
   initControls();
   loadState();
   maybeAutoFetchWeather();
