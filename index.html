@@ -200,20 +200,21 @@
       font-size: 0.7rem;
       color: var(--text-muted);
     }
-    .controls-toggle {
-      border: 1px solid var(--border-subtle);
-      border-radius: 999px;
-      background: #f9fafb;
-      padding: 2px 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--text-muted);
-    }
-    .controls-toggle:active {
-      transform: translateY(1px);
-    }
+.controls-toggle {
+  border: none;              /* no circle */
+  border-radius: 0;
+  background: transparent;   /* no pill */
+  padding: 0;                /* tight around the chevron */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;         /* larger chevron like the example */
+  color: var(--text-muted);  /* or #444 if you prefer darker */
+}
+
+.controls-toggle:active {
+  transform: none;           /* no press animation */
+}
     .controls-body {
       margin-top: 8px;
     }
