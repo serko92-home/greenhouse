@@ -517,6 +517,10 @@
       font-size: 0.7rem;
       color: var(--text-muted);
     }
+    @keyframes ptr-spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
     .hidden-inputs { display:none; }
   </style>
@@ -528,8 +532,13 @@
     <small>Ferns in bubble, lemongrass wrapped, zone 7b.</small>
     <div id="weatherInfo" class="meta"></div>
     <div id="ws1Info" class="meta"></div>
+
+    <!-- Hidden holder for last lux reading so SKY chip can use it -->
+    <div id="insideLight" class="meta" style="display:none;"></div>
+
     <div id="lastUpdated" class="meta"></div>
   </header>
+
 
   <!-- Now card -->
   <div class="card">
@@ -1183,16 +1192,33 @@ function maybeAutoFetchWS1(){
   function ensureBar(){
     if (bar) return bar;
     bar = document.createElement("div");
-    bar.style.position="fixed"; bar.style.top="0"; bar.style.left="0"; bar.style.right="0";
-    bar.style.height="0px"; bar.style.background="rgba(56,189,248,0.12)";
-    bar.style.backdropFilter="blur(6px)"; bar.style.color="#374151";
-    bar.style.fontSize="12px"; bar.style.display="flex"; bar.style.alignItems="center"; bar.style.justifyContent="center";
-    bar.style.transition="height .15s ease";
-    bar.style.zIndex="9999";
-    bar.textContent="Refreshing greenhouse plan";
+    bar.style.position = "fixed";
+    bar.style.top = "0";
+    bar.style.left = "0";
+    bar.style.right = "0";
+    bar.style.height = "0px";
+    bar.style.background = "rgba(56,189,248,0.12)";
+    bar.style.backdropFilter = "blur(6px)";
+    bar.style.display = "flex";
+    bar.style.alignItems = "center";
+    bar.style.justifyContent = "center";
+    bar.style.transition = "height .15s ease";
+    bar.style.zIndex = "9999";
+
+    // no words, just a simple spinner like iOS pull to refresh
+    const spinner = document.createElement("div");
+    spinner.style.width = "18px";
+    spinner.style.height = "18px";
+    spinner.style.borderRadius = "999px";
+    spinner.style.border = "2px solid rgba(148,163,184,0.7)";
+    spinner.style.borderTopColor = "#0ea5e9";
+    spinner.style.animation = "ptr-spin 0.8s linear infinite";
+    bar.appendChild(spinner);
+
     document.body.appendChild(bar);
     return bar;
   }
+
   window.addEventListener("touchstart", e => {
     const target = e.target;
 
