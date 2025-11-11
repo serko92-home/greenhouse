@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Greenhouse Helper – Clean Cards</title>
+  <title>Greenhouse Helper</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <style>
     :root {
@@ -524,7 +524,7 @@
 <body>
 <div class="app">
   <header>
-    <h1>Greenhouse Helper</h1>
+    <h1>Greenhouse Dashboard</h1>
     <small>Ferns in bubble, lemongrass wrapped, zone 7b.</small>
     <div id="weatherInfo" class="meta"></div>
     <div id="ws1Info" class="meta"></div>
@@ -583,8 +583,7 @@
           <span class="unit">°F</span>
         </div>
         <div class="stat-sub">
-          <span id="insideHumDisplay"> - </span>% RH ·
-          <span id="insideLight">no light yet</span>
+          <span id="insideHumDisplay"> - </span>% RH
         </div>
       </div>
     </div>
@@ -886,7 +885,7 @@ async function fetchWeather() {
       tomorrowMax = data.daily.temperature_2m_max[1]*9/5+32;
     }
     lastWeatherFetchedAt = Date.now();
-    let info = "Outside weather updated just now for Troy, NC.";
+    let info = "Weather updated just now for Troy, NC.";
     if (tomorrowMin!=null && tomorrowMax!=null) {
       info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
     }
@@ -894,7 +893,7 @@ async function fetchWeather() {
     mirrorDisplays();
   } catch(e) {
     console.error(e);
-    setText("weatherInfo","Weather fetch failed, using last saved outside values.");
+    setText("weatherInfo","Weather update failed, using last saved outside values.");
   }
 }
 
