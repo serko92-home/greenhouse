@@ -1120,9 +1120,10 @@ function maybeAutoFetchWS1(){
     if (!pulling) return; pulling=false;
     if (!bar) return;
     bar.style.height="20px";
+    bar.style.display="block";
     await Promise.all([fetchWeather(), fetchWS1(true)]);
     compute();
-    setTimeout(()=>{ if(bar) bar.style.height="0px"; }, 500);
+    setTimeout(()=>{ if(bar) bar.style.height="0px"; bar.style.display="none"; }, 500);
   });
 })();
 
