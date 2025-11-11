@@ -1165,7 +1165,7 @@ function maybeAutoFetchWeather(){
     fetchWeather();
   } else {
     const ageMin = Math.round((Date.now()-lastWeatherFetchedAt)/60000);
-    let info = "Outside weather fetched about "+ageMin+" min ago.";
+    let info = "Weather fetched about "+ageMin+" min ago.";
     if (tomorrowMin!=null && tomorrowMax!=null)
       info += " Tomorrow: "+Math.round(tomorrowMin)+"° / "+Math.round(tomorrowMax)+"°.";
     setText("weatherInfo", info);
