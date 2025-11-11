@@ -539,7 +539,7 @@
       <div id="heatChip" class="chip chip-heat off">
         <span class="chip-dot"></span>
         <span class="chip-label">Heat</span>
-        <span id="heatChipText" class="value">Standby</span>
+        <span id="heatChipText" class="value">Off</span>
       </div>
       <div class="chip">
         <span class="chip-label">Sky</span>
@@ -777,8 +777,8 @@ function updateHeatAndSky(insideT, luxInfo) {
     chip.classList.remove("on","off");
     chip.classList.add(heatOn ? "on" : "off");
     chipTxt.textContent = heatOn
-      ? "On - pushing toward 50 °F"
-      : "Standby - above 50 °F";
+      ? "On"
+      : "Off";
   }
   if (!luxInfo) luxInfo = getLuxInfo(getCurrentLux());
   const skyLabel = document.getElementById("skyLabel");
